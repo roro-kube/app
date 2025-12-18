@@ -40,6 +40,121 @@ during initial task creation.
 
 ---
 
+## Mise Tasks for Command Execution (MANDATORY for LLMs)
+
+### Critical Rule
+
+> **LLMs MUST use mise tasks to execute ALL command-line operations.**
+> **NEVER execute commands directly. Always use `mise run <task-name>`.**
+
+This ensures:
+* Consistent environment setup (tools, versions, environment variables)
+* Reproducible builds and executions
+* Proper tool version management
+* Project-specific configurations are applied
+
+---
+
+### What Are Mise Tasks?
+
+Mise tasks are project-defined command aliases stored in `mise.toml`. They encapsulate:
+* Command sequences
+* Environment setup
+* Tool version requirements
+* Project-specific configurations
+
+Tasks are defined in the `[tasks]` section of `mise.toml`:
+
+```toml
+[tasks]
+task-name = "command to execute"
+```
+
+---
+
+### How to Use Mise Tasks
+
+**ALWAYS** execute commands through mise tasks:
+
+```bash
+# ✅ CORRECT: Use mise task
+mise run task-name
+
+# ❌ WRONG: Direct command execution
+command-to-execute
+```
+
+If a task doesn't exist for a command you need, you should:
+1. Check if a similar task exists
+2. Ask the user if a new task should be created
+3. Never execute commands directly
+
+---
+
+### Default Tasks
+
+Default tasks are commonly used commands defined in the project's `mise.toml`. They typically include:
+
+* **Build tasks**: Compile, build, or bundle the project
+* **Test tasks**: Run test suites, linters, or validators
+* **Development tasks**: Start dev servers, watch files, or run development tools
+* **Deployment tasks**: Build for production, deploy, or publish
+* **Utility tasks**: Format code, clean artifacts, or run migrations
+
+**To see available tasks**, check `mise.toml` or run:
+```bash
+mise tasks
+```
+
+**To see what a task does**, run:
+```bash
+mise run task-name --help
+# or check mise.toml directly
+```
+
+---
+
+### Examples
+
+**❌ WRONG: Direct command execution**
+```bash
+cargo build
+npm test
+backlog task list
+```
+
+**✅ CORRECT: Using mise tasks**
+```bash
+mise run build      # if a 'build' task exists
+mise run test       # if a 'test' task exists
+mise run backlog-list  # if a 'backlog-list' task exists
+```
+
+---
+
+### Task Discovery
+
+Before executing any command:
+
+1. **Check `mise.toml`** for existing tasks
+2. **List available tasks**: `mise tasks`
+3. **Use the appropriate task** if it exists
+4. **Ask the user** if you need to create a new task
+
+---
+
+### Exception: Mise Itself
+
+The only exception is using `mise` commands directly:
+* `mise tasks` - List available tasks
+* `mise run <task>` - Execute a task
+* `mise install` - Install tools
+* `mise --version` - Check mise version
+
+These are meta-commands for managing mise itself and tasks.
+
+---
+
 ## Two-Phase Task Creation Flow (MANDATORY)
 
 ### Phase 1 — Create the Task Shell (CLI)

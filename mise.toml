@@ -2,8 +2,10 @@
 # This file defines tools, environment variables, and tasks
 
 [tools]
-# Install Backlog.md from GitHub releases
-# The GitHub backend will automatically detect the correct asset for your platform
+"rust" = { version = "nightly", components = "rust-src,llvm-tools" }
+cargo = "latest"
+node = "24"
+
 [tools."github:MrLesk/Backlog.md"]
 version = "latest"
 bin = "backlog"  # Rename backlog-bun to backlog
