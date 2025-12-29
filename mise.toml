@@ -14,7 +14,8 @@ bin = "backlog"  # Rename backlog-bun to backlog
 # [env]
 # NODE_ENV = "development"
 
-# Example: Define tasks
-# [tasks]
-# hello = "echo hello from mise"
+# Define tasks
+[tasks]
+build = "cargo build"
+run = "cargo run"
 
