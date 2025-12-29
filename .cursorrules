@@ -143,15 +143,24 @@ Before executing any command:
 
 ---
 
-### Exception: Mise Itself
+### Exception: Mise Itself and Tools Installed via Mise
 
-The only exception is using `mise` commands directly:
-* `mise tasks` - List available tasks
-* `mise run <task>` - Execute a task
-* `mise install` - Install tools
-* `mise --version` - Check mise version
+The only exceptions are:
 
-These are meta-commands for managing mise itself and tasks.
+1. **Mise meta-commands** (use directly):
+   * `mise tasks` - List available tasks
+   * `mise run <task>` - Execute a task
+   * `mise install` - Install tools
+   * `mise --version` - Check mise version
+
+2. **Tools installed via mise that aren't in PATH** (use `mise exec`):
+   * `mise exec -- backlog <command>` - Execute backlog CLI commands
+   * Example: `mise exec -- backlog task edit task-0003 -s Done`
+   * Example: `mise exec -- backlog task list --plain`
+   
+   **Note**: The backlog CLI is installed via mise but not directly in PATH, so it must be executed through `mise exec -- backlog`.
+
+These are meta-commands for managing mise itself, tasks, and tools installed via mise.
 
 ---
 
@@ -170,7 +179,7 @@ The CLI is used to:
 #### Example
 
 ```bash
-backlog task create "Add user authentication system" -l auth,backend --priority high
+mise exec -- backlog task create "Add user authentication system" -l auth,backend --priority high
 ```
 
 This generates:
@@ -230,7 +239,7 @@ for initial task detailing. Markdown is the source of truth.
 
 1. **Task Creation**
 
-   * Always create tasks via `backlog task create`
+   * Always create tasks via `mise exec -- backlog task create`
    * Keep CLI usage minimal and metadata-focused
 
 2. **Task Authoring**
@@ -376,16 +385,18 @@ Tasks should:
 
 ## Handy CLI Commands (Metadata Only)
 
-| Action         | Example                                   |
-| -------------- | ----------------------------------------- |
-| Create task    | `backlog task create "Add OAuth support"` |
-| Assign         | `backlog task edit 42 -a @sara`           |
-| Change status  | `backlog task edit 42 -s "In Progress"`   |
-| Add labels     | `backlog task edit 42 -l auth,backend`    |
-| Set priority   | `backlog task edit 42 --priority high`    |
-| Add dependency | `backlog task edit 42 --dep task-12`      |
-| List (AI mode) | `backlog task list --plain`               |
-| View (AI mode) | `backlog task 42 --plain`                 |
+**Important**: All backlog commands must be executed via `mise exec -- backlog`:
+
+| Action         | Example                                                      |
+| -------------- | ------------------------------------------------------------ |
+| Create task    | `mise exec -- backlog task create "Add OAuth support"`       |
+| Assign         | `mise exec -- backlog task edit 42 -a @sara`                |
+| Change status  | `mise exec -- backlog task edit 42 -s "In Progress"`         |
+| Add labels     | `mise exec -- backlog task edit 42 -l auth,backend`         |
+| Set priority   | `mise exec -- backlog task edit 42 --priority high`        |
+| Add dependency | `mise exec -- backlog task edit 42 --dep task-12`           |
+| List (AI mode) | `mise exec -- backlog task list --plain`                     |
+| View (AI mode) | `mise exec -- backlog task 42 --plain`                      |
 
 ---
 
@@ -395,7 +406,7 @@ Tasks should:
 
 1. **Set status and assign** (via CLI):
    ```bash
-   backlog task edit 42 -s "In Progress" -a @myself
+   mise exec -- backlog task edit 42 -s "In Progress" -a @myself
    ```
 
 2. **Add Implementation Plan** (edit Markdown file directly):
@@ -413,7 +424,7 @@ Tasks should:
 
 6. **Mark task as Done** (via CLI):
    ```bash
-   backlog task edit 42 -s Done
+   mise exec -- backlog task edit 42 -s Done
    ```
 
 ---
@@ -466,14 +477,14 @@ The CLI is the lifecycle manager.
 
 ```bash
 # DON'T DO THIS for initial task creation:
-backlog task create "Title" -d "Long description..." --ac "Criterion 1" --ac "Criterion 2" --plan "Step 1..."
+mise exec -- backlog task create "Title" -d "Long description..." --ac "Criterion 1" --ac "Criterion 2" --plan "Step 1..."
 ```
 
 ### ✅ CORRECT: Two-Phase Approach
 
 ```bash
 # Phase 1: Create minimal shell
-backlog task create "Title" -l backend --priority high
+mise exec -- backlog task create "Title" -l backend --priority high
 
 # Phase 2: Edit the generated Markdown file directly
 # Open: backlog/tasks/task-42 - Title.md
@@ -492,7 +503,7 @@ status: In Progress  # ❌ Use CLI instead
 ### ✅ CORRECT: Use CLI for Metadata
 
 ```bash
-backlog task edit 42 -s "In Progress" -a @myself
+mise exec -- backlog task edit 42 -s "In Progress" -a @myself
 ```
 
 ---
@@ -512,7 +523,7 @@ A task is **Done** only when **ALL** of the following are complete:
 
 1. **All acceptance criteria checked** (in Markdown file: `- [x]`)
 2. **Implementation notes added** (in Markdown file)
-3. **Status set to Done** (via CLI: `backlog task edit 42 -s Done`)
+3. **Status set to Done** (via CLI: `mise exec -- backlog task edit 42 -s Done`)
 4. **Tests pass**: Run test suite and linting
 5. **Documentation updated**: Update relevant docs if needed
 6. **Code reviewed**: Self-review your changes
@@ -537,21 +548,21 @@ A task is **Done** only when **ALL** of the following are complete:
 
 | Task | ✅ DO | ❌ DON'T |
 |------|-------|----------|
-| Create task | `backlog task create "Title" -l label` | `backlog task create "Title" -d "..." --ac "..." --plan "..."` |
-| Add description | Edit Markdown file directly | `backlog task edit 42 -d "..."` |
-| Add AC | Edit Markdown file directly | `backlog task edit 42 --ac "..."` |
-| Change status | `backlog task edit 42 -s "In Progress"` | Edit frontmatter in Markdown |
+| Create task | `mise exec -- backlog task create "Title" -l label` | `mise exec -- backlog task create "Title" -d "..." --ac "..." --plan "..."` |
+| Add description | Edit Markdown file directly | `mise exec -- backlog task edit 42 -d "..."` |
+| Add AC | Edit Markdown file directly | `mise exec -- backlog task edit 42 --ac "..."` |
+| Change status | `mise exec -- backlog task edit 42 -s "In Progress"` | Edit frontmatter in Markdown |
 
 ### Task Implementation
 
 | Task | ✅ DO | ❌ DON'T |
 |------|-------|----------|
-| Mark AC complete | Edit Markdown: `- [ ]` → `- [x]` | `backlog task edit 42 --check-ac 1` |
-| Add plan | Edit Markdown file directly | `backlog task edit 42 --plan "..."` |
-| Add notes | Edit Markdown file directly | `backlog task edit 42 --notes "..."` |
-| Change status | `backlog task edit 42 -s Done` | Edit frontmatter in Markdown |
+| Mark AC complete | Edit Markdown: `- [ ]` → `- [x]` | `mise exec -- backlog task edit 42 --check-ac 1` |
+| Add plan | Edit Markdown file directly | `mise exec -- backlog task edit 42 --plan "..."` |
+| Add notes | Edit Markdown file directly | `mise exec -- backlog task edit 42 --notes "..."` |
+| Change status | `mise exec -- backlog task edit 42 -s Done` | Edit frontmatter in Markdown |
 
 ---
 
-Full help available: `backlog --help`
+Full help available: `mise exec -- backlog --help`
 
