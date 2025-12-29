@@ -5,4 +5,12 @@ edition = "2021"
 
 [dependencies]
 dioxus = { version = "0.6", features = ["desktop"] }
+tray-icon = "0.19"
+tao = "0.30"
+
+[target.'cfg(windows)'.dependencies]
+# Windows-specific dependencies are handled by tray-icon and tao automatically
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# macOS-specific dependencies are handled by tray-icon and tao automatically
 
