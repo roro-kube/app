@@ -1,6 +1,7 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
 use tao::event_loop::{ControlFlow, EventLoop};
+use tray_icon::menu::{Menu, MenuItem};
 use tray_icon::TrayIconBuilder;
 
 fn main() {
@@ -16,10 +17,16 @@ fn main() {
         }
     };
 
+    // Create a menu with a placeholder item
+    let menu = Menu::new();
+    let menu_item = MenuItem::new("About", true, None);
+    menu.append(&menu_item).unwrap();
+
     let event_loop = EventLoop::new();
     let _tray_icon = TrayIconBuilder::new()
         .with_icon(icon)
         .with_tooltip("Roro Kube")
+        .with_menu(Box::new(menu))
         .build()
         .unwrap();
 

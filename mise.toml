@@ -17,5 +17,6 @@ bin = "backlog"  # Rename backlog-bun to backlog
 # Define tasks
 [tasks]
 build = "cargo build"
-run = "cargo run"
+kill = "taskkill -F -IM roro-kube.exe 2>/dev/null || true"
+run = { depends = ["kill"], run = "cargo run" }
 
