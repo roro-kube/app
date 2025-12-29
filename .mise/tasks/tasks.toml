@@ -1,0 +1,12 @@
+[build]
+description = "Build the project"
+run = "cargo build"
+
+[kill]
+description = "Kill running roro-kube.exe process"
+run = "taskkill -F -IM roro-kube.exe 2>/dev/null || true"
+
+[run]
+description = "Run the application"
+depends = ["kill"]
+run = "cargo run"

@@ -14,9 +14,5 @@ bin = "backlog"  # Rename backlog-bun to backlog
 # [env]
 # NODE_ENV = "development"
 
-# Define tasks
-[tasks]
-build = "cargo build"
-kill = "taskkill -F -IM roro-kube.exe 2>/dev/null || true"
-run = { depends = ["kill"], run = "cargo run" }
-
+[task_config]
+includes = [".mise/tasks.toml"]
