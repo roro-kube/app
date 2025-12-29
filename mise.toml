@@ -5,6 +5,7 @@
 "rust" = { version = "nightly", components = "rust-src,llvm-tools" }
 cargo = "latest"
 node = "24"
+"cargo:dioxus-cli" = "latest"
 
 [tools."github:MrLesk/Backlog.md"]
 version = "latest"
