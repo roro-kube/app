@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "cnshenj.vscode-task-manager",
+        "hverlin.mise-vscode",
+        "dioxuslabs.dioxus",
+        "tombi-toml.tombi",
+        "rust-lang.rust-analyzer"
+    ]
+}
