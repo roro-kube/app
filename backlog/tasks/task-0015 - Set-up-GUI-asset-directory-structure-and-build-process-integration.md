@@ -1,10 +1,10 @@
 ---
 id: task-0015
 title: Set up GUI asset directory structure and build process integration
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 22:59'
-updated_date: '2025-12-30 17:25'
+updated_date: '2025-12-30 17:47'
 labels:
   - frontend
   - gui
@@ -13,7 +13,7 @@ dependencies:
   - task-0011
   - task-0014
 priority: high
-ordinal: 1000
+ordinal: 12000
 ---
 
 ## Description
