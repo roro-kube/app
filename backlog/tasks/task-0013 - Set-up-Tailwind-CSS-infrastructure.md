@@ -1,10 +1,10 @@
 ---
 id: task-0013
 title: Set up Tailwind CSS infrastructure
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 22:59'
-updated_date: '2025-12-30 14:49'
+updated_date: '2025-12-30 15:34'
 labels:
   - frontend
   - assets
@@ -12,7 +12,7 @@ labels:
 dependencies:
   - task-0009
 priority: high
-ordinal: 1000
+ordinal: 10000
 ---
 
 ## Description

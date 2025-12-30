@@ -14,12 +14,18 @@ run = "cargo build -p roro_domain"
 description = "Build the core crate"
 run = "cargo build -p roro_core"
 
+[build-assets]
+description = "Build all GUI assets (icons and Tailwind CSS)"
+depends = ["icons-build", "tailwind-build"]
+
 [build-gui]
 description = "Build the GUI crate"
+depends = ["build-assets"]
 run = "cargo build -p roro_gui"
 
 [run-gui]
 description = "Run the GUI crate"
+depends = ["build-assets"]
 run = "cargo run -p roro_gui"
 
 [backlog-server]
@@ -29,6 +35,14 @@ run = "mise exec -- backlog browser"
 [icons-install]
 description = "Install icon dependencies (heroicons, sharp, png2icons)"
 run = "cd icons && npm install"
+
+[tailwind-install]
+description = "Install Tailwind CSS dependencies (tailwindcss, postcss, vite, autoprefixer)"
+run = "cd tailwind && npm install"
+
+[tailwind-build]
+description = "Build Tailwind CSS and output compiled CSS to gui/assets/tailwind.css"
+run = "cd tailwind && npm run build"
 
 [icons-clean]
 description = "Remove generated icon files from dist directory"
@@ -49,3 +63,15 @@ depends = ["icons-build-branding", "icons-build-heroicons"]
 [icons-verify]
 description = "Verify all generated icon files exist and are valid"
 run = "cd icons && node scripts/verify.mjs"
+
+[icons-watch]
+description = "Watch mode for icon builds (re-runs icon build on changes to icon scripts or source files)"
+run = "cd icons && while true; do node scripts/copy-icons.js; sleep 2; done"
+
+[tailwind-watch]
+description = "Watch mode for Tailwind CSS builds using Vite's watch mode"
+run = "cd tailwind && npx vite build --watch"
+
+[assets-watch]
+description = "Watch mode for both icons and Tailwind CSS (runs both watch tasks in parallel)"
+run = "mise run icons-watch & mise run tailwind-watch & wait"

@@ -33,7 +33,7 @@ fn App() -> Element {
     
     use_effect(move || {
         // Initialize tray icon after Dioxus has started
-        // This avoids conflicts with macOS menu classes
+        // Note: On macOS, menu is skipped to avoid conflicts with Dioxus's menu system
         match tray::init_tray_icon() {
             Ok(icon) => {
                 tray_icon.set(Some(icon));
@@ -45,6 +45,7 @@ fn App() -> Element {
     });
 
     rsx! {
+        document::Stylesheet { href: asset!("/assets/tailwind.css") }
         Greeting {}
     }
 }

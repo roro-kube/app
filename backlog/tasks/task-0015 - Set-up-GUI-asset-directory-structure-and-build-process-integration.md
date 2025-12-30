@@ -1,9 +1,10 @@
 ---
 id: task-0015
 title: Set up GUI asset directory structure and build process integration
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-12-29 22:59'
+updated_date: '2025-12-30 17:25'
 labels:
   - frontend
   - gui
@@ -12,6 +13,7 @@ dependencies:
   - task-0011
   - task-0014
 priority: high
+ordinal: 1000
 ---
 
 ## Description
@@ -21,20 +23,16 @@ Set up the complete GUI asset directory structure and integrate the build proces
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
 <!-- AC:BEGIN -->
-- [ ] `gui/assets/` directory exists with proper structure
-- [ ] `gui/assets/icons/` directory exists for SVG icons
-- [ ] `gui/assets/branding/` directory exists for logos and app icons
-- [ ] `gui/assets/tailwind.css` location is established (from task-0014)
-- [ ] Build process coordination exists (Taskfile.yml, Makefile, or similar)
-- [ ] Build process includes mise task to build icons (executes `mise run icons-build`)
-- [ ] Build process includes mise task to build Tailwind CSS (executes `mise run tailwind-build`)
-- [ ] Build process can run both icon and Tailwind builds in sequence
-- [ ] GUI application can access assets using `asset!()` macro and `include_str!()` macro
-- [ ] Complete build workflow successfully prepares all assets before GUI compilation
-- [ ] Development workflow supports watch mode for assets (optional but recommended)
+- [ ] #1 `gui/assets/` directory exists with proper structure
+- [ ] #2 `gui/assets/icons/` directory exists for SVG icons
+- [ ] #3 `gui/assets/branding/` directory exists for logos and app icons
+- [ ] #4 `gui/assets/tailwind.css` location is established (from task-0014)
+- [ ] #5 Build process coordination exists (Taskfile.yml, Makefile, or similar)
+- [ ] #6 Build process includes mise task to build icons (executes `mise run icons-build`)
+- [ ] #7 Build process includes mise task to build Tailwind CSS (executes `mise run tailwind-build`)
+- [ ] #8 Build process can run both icon and Tailwind builds in sequence
+- [ ] #9 GUI application can access assets using `asset!()` macro and `include_str!()` macro
+- [ ] #10 Complete build workflow successfully prepares all assets before GUI compilation
+- [ ] #11 Development workflow supports watch mode for assets (optional but recommended)
 <!-- AC:END -->
-
-
-
