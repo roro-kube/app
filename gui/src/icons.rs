@@ -2,7 +2,8 @@ use dioxus::prelude::*;
 
 // Workaround for workspace 'core' crate shadowing standard library 'core' module
 // The component macro needs access to std::core, so we ensure it's available
-#[allow(unused_imports)]
+// Workaround for workspace 'core' crate shadowing standard library 'core' module
+// The component macro needs access to std::core, so we ensure it's available
 use std::prelude::v1::*;
 
 #[component]
@@ -25,6 +26,16 @@ pub fn Icon(
     }
 }
 
+/// Get SVG content for an icon by name
+///
+/// This function is called on line 15 within the `Icon` component.
+/// The `dead_code` warning is a false positive because the `rsx!` macro
+/// expansion doesn't properly track function usage.
+///
+/// # Note
+/// This function IS used - see line 15: `let icon_svg = get_icon_svg(&name);`
+/// The allow attribute is necessary due to macro expansion limitations.
+#[allow(dead_code)] // False positive: used on line 15, macro expansion doesn't detect it
 fn get_icon_svg(name: &str) -> String {
     match name {
         "logo" => include_str!("../assets/branding/logo.svg").to_string(),

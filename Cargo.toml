@@ -21,6 +21,29 @@ thiserror = "1.0"
 clap = { version = "4.5", features = ["derive"] }
 
 [workspace.lints.clippy]
+# Maximum strictness: Enable all pedantic checks
 pedantic = "warn"
+# Complexity checks
 cognitive_complexity = "warn"
 type_complexity = "warn"
+# Correctness - catch bugs
+unwrap_used = "warn"
+expect_used = "warn"
+unwrap_in_result = "warn"
+# Style and clarity
+needless_borrow = "warn"
+redundant_clone = "warn"
+unnecessary_cast = "warn"
+uninlined_format_args = "warn"
+single_char_pattern = "warn"
+assertions_on_constants = "warn"
+# Documentation
+missing_errors_doc = "warn"
+doc_markdown = "warn"
+# Performance
+large_enum_variant = "warn"
+# Suspicious patterns
+unused_self = "warn"
+unnecessary_wraps = "warn"
+# Must use
+must_use_candidate = "warn"

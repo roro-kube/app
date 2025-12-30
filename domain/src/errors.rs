@@ -26,4 +26,3 @@ pub enum DomainError {
     #[error("Operation timeout: {0}")]
     Timeout(String),
 }
-

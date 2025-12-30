@@ -37,4 +37,3 @@ pub struct ProcessingResult {
     pub state: EntityState,
     pub output: HashMap<String, serde_json::Value>,
 }
-

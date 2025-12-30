@@ -10,4 +10,3 @@
 // Example:
 // pub fn persistence_to_domain(definition: &PersistenceDefinition) -> Result<DomainDefinition, BridgeError>
 // pub fn domain_to_persistence(result: &DomainResult) -> PersistenceResult
-

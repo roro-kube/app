@@ -12,12 +12,10 @@ fn test_core_error_domain_conversion() {
     let core_error: CoreError = domain_error.into();
 
     match core_error {
-        CoreError::Domain(e) => {
-            match e {
-                DomainError::Processing(msg) => assert_eq!(msg, "Test processing error"),
-                _ => panic!("Expected Processing variant"),
-            }
-        }
+        CoreError::Domain(e) => match e {
+            DomainError::Processing(msg) => assert_eq!(msg, "Test processing error"),
+            _ => panic!("Expected Processing variant"),
+        },
         _ => panic!("Expected Domain variant"),
     }
 }
@@ -28,12 +26,10 @@ fn test_core_error_persistence_conversion() {
     let core_error: CoreError = persistence_error.into();
 
     match core_error {
-        CoreError::Persistence(e) => {
-            match e {
-                PersistenceError::NotFound(id) => assert_eq!(id, "test-id"),
-                _ => panic!("Expected NotFound variant"),
-            }
-        }
+        CoreError::Persistence(e) => match e {
+            PersistenceError::NotFound(id) => assert_eq!(id, "test-id"),
+            _ => panic!("Expected NotFound variant"),
+        },
         _ => panic!("Expected Persistence variant"),
     }
 }
@@ -41,7 +37,7 @@ fn test_core_error_persistence_conversion() {
 #[test]
 fn test_core_error_validation() {
     let error = CoreError::Validation("Invalid input format".to_string());
-    let error_msg = format!("{}", error);
+    let error_msg = format!("{error}");
     assert!(error_msg.contains("Validation error"));
     assert!(error_msg.contains("Invalid input format"));
 }
@@ -49,7 +45,7 @@ fn test_core_error_validation() {
 #[test]
 fn test_core_error_bridge() {
     let error = CoreError::Bridge("Transformation failed".to_string());
-    let error_msg = format!("{}", error);
+    let error_msg = format!("{error}");
     assert!(error_msg.contains("Bridge error"));
     assert!(error_msg.contains("Transformation failed"));
 }
@@ -59,14 +55,14 @@ fn test_core_error_display_formatting() {
     // Test Domain error display
     let domain_error = DomainError::HandlerNotFound("unknown-handler".to_string());
     let core_error: CoreError = domain_error.into();
-    let msg = format!("{}", core_error);
+    let msg = format!("{core_error}");
     assert!(msg.contains("Domain error"));
     assert!(msg.contains("Handler not found"));
 
     // Test Persistence error display
     let persistence_error = PersistenceError::Database("Connection failed".to_string());
     let core_error: CoreError = persistence_error.into();
-    let msg = format!("{}", core_error);
+    let msg = format!("{core_error}");
     assert!(msg.contains("Persistence error"));
     assert!(msg.contains("Database error"));
 }
@@ -82,8 +78,7 @@ fn test_core_error_all_variants() {
     ];
 
     for error in errors {
-        let msg = format!("{}", error);
+        let msg = format!("{error}");
         assert!(!msg.is_empty());
     }
 }
-

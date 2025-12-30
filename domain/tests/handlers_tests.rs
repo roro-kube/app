@@ -3,8 +3,8 @@
 // Tests for HandlerRegistry and OperationHandler trait.
 
 use roro_domain::{
-    DomainEntity, EntityState, HandlerRegistry, OperationHandler, ProcessingContext,
-    ProcessingResult, DomainError,
+    DomainEntity, DomainError, EntityState, HandlerRegistry, OperationHandler, ProcessingContext,
+    ProcessingResult,
 };
 use std::sync::Arc;
 
@@ -43,23 +43,21 @@ impl OperationHandler for FailureHandler {
 fn test_handler_registry_new() {
     let _registry = HandlerRegistry::new();
     // Registry should be created successfully
-    assert!(true);
 }
 
 #[test]
 fn test_handler_registry_default() {
     let _registry = HandlerRegistry::default();
     // Default registry should be created successfully
-    assert!(true);
 }
 
 #[test]
 fn test_handler_registry_register() {
     let mut registry = HandlerRegistry::new();
     let handler = Arc::new(SuccessHandler);
-    
+
     registry.register("test-operation".to_string(), handler);
-    
+
     // Handler should be registered
     assert!(registry.get_handler("test-operation").is_some());
 }
@@ -68,9 +66,9 @@ fn test_handler_registry_register() {
 fn test_handler_registry_get_handler() {
     let mut registry = HandlerRegistry::new();
     let handler = Arc::new(SuccessHandler);
-    
+
     registry.register("test-operation".to_string(), handler);
-    
+
     let retrieved = registry.get_handler("test-operation");
     assert!(retrieved.is_some());
 }
@@ -78,7 +76,7 @@ fn test_handler_registry_get_handler() {
 #[test]
 fn test_handler_registry_get_nonexistent_handler() {
     let registry = HandlerRegistry::new();
-    
+
     let retrieved = registry.get_handler("non-existent");
     assert!(retrieved.is_none());
 }
@@ -88,10 +86,10 @@ fn test_handler_registry_multiple_handlers() {
     let mut registry = HandlerRegistry::new();
     let handler1 = Arc::new(SuccessHandler);
     let handler2 = Arc::new(FailureHandler);
-    
+
     registry.register("operation1".to_string(), handler1);
     registry.register("operation2".to_string(), handler2);
-    
+
     assert!(registry.get_handler("operation1").is_some());
     assert!(registry.get_handler("operation2").is_some());
     assert!(registry.get_handler("operation3").is_none());
@@ -111,11 +109,12 @@ async fn test_operation_handler_trait_success() {
         name: "Test".to_string(),
         state: EntityState::Pending,
     };
-    
+
     let result = handler.handle(&mut context, &entity).await;
-    
-    assert!(result.is_ok());
-    let processing_result = result.unwrap();
+
+    let Ok(processing_result) = result else {
+        panic!("handler should succeed");
+    };
     assert_eq!(processing_result.state, EntityState::Complete);
 }
 
@@ -133,15 +132,17 @@ async fn test_operation_handler_trait_failure() {
         name: "Test".to_string(),
         state: EntityState::Pending,
     };
-    
+
     let result = handler.handle(&mut context, &entity).await;
-    
-    assert!(result.is_err());
-    match result.unwrap_err() {
-        DomainError::Processing(msg) => {
-            assert!(msg.contains("Handler failed"));
-        }
-        _ => panic!("Expected Processing error"),
+
+    match result {
+        Err(e) => match e {
+            DomainError::Processing(msg) => {
+                assert!(msg.contains("Handler failed"));
+            }
+            _ => panic!("Expected Processing error"),
+        },
+        Ok(_) => panic!("Expected error but got Ok"),
     }
 }
 
@@ -150,12 +151,11 @@ fn test_handler_registry_replace_handler() {
     let mut registry = HandlerRegistry::new();
     let handler1 = Arc::new(SuccessHandler);
     let handler2 = Arc::new(FailureHandler);
-    
+
     registry.register("test-operation".to_string(), handler1);
     registry.register("test-operation".to_string(), handler2);
-    
+
     // Should have the second handler (replaced)
     let retrieved = registry.get_handler("test-operation");
     assert!(retrieved.is_some());
 }
-

@@ -3,27 +3,27 @@
 // Tests for Store trait with mock implementation.
 // These tests verify trait method signatures, async behavior, and error handling patterns.
 
-use roro_persistence::{PersistenceError, Store};
 use async_trait::async_trait;
+use roro_persistence::{PersistenceError, Store};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 // Mock entity for testing
 #[derive(Debug, Clone)]
 struct TestEntity {
-    id: String,
-    name: String,
+    _id: String,
+    _name: String,
 }
 
 // Mock Store implementation for testing
 struct MockStore {
-    data: Arc<Mutex<HashMap<String, TestEntity>>>,
+    _data: Arc<Mutex<HashMap<String, TestEntity>>>,
 }
 
 impl MockStore {
     fn new() -> Self {
         Self {
-            data: Arc::new(Mutex::new(HashMap::new())),
+            _data: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 }
@@ -75,10 +75,10 @@ impl Store for MockStore {
 async fn test_store_trait_create() {
     let store = MockStore::new();
     let entity = TestEntity {
-        id: "test-1".to_string(),
-        name: "Test".to_string(),
+        _id: "test-1".to_string(),
+        _name: "Test".to_string(),
     };
-    
+
     let result = store.create(&entity).await;
     assert!(result.is_ok());
 }
@@ -86,20 +86,22 @@ async fn test_store_trait_create() {
 #[tokio::test]
 async fn test_store_trait_read() {
     let store = MockStore::new();
-    
+
     let result: Result<Option<TestEntity>, PersistenceError> = store.read("test-id").await;
-    assert!(result.is_ok());
-    assert!(result.unwrap().is_none());
+    let Ok(option) = result else {
+        panic!("read should succeed");
+    };
+    assert!(option.is_none());
 }
 
 #[tokio::test]
 async fn test_store_trait_update() {
     let store = MockStore::new();
     let entity = TestEntity {
-        id: "test-1".to_string(),
-        name: "Updated".to_string(),
+        _id: "test-1".to_string(),
+        _name: "Updated".to_string(),
     };
-    
+
     let result = store.update("test-1", &entity).await;
     assert!(result.is_ok());
 }
@@ -107,7 +109,7 @@ async fn test_store_trait_update() {
 #[tokio::test]
 async fn test_store_trait_delete() {
     let store = MockStore::new();
-    
+
     let result = store.delete("test-id").await;
     assert!(result.is_ok());
 }
@@ -115,35 +117,49 @@ async fn test_store_trait_delete() {
 #[tokio::test]
 async fn test_store_trait_list() {
     let store = MockStore::new();
-    
+
     let result: Result<Vec<TestEntity>, PersistenceError> = store.list().await;
-    assert!(result.is_ok());
-    assert!(result.unwrap().is_empty());
+    let Ok(vec) = result else {
+        panic!("list should succeed");
+    };
+    assert!(vec.is_empty());
 }
 
 #[tokio::test]
 async fn test_store_trait_async_behavior() {
     // Verify that all methods are async and can be awaited
     let store = MockStore::new();
-    
+
     // All operations should complete without blocking
-    let _ = store.create(&TestEntity { id: "1".to_string(), name: "Test".to_string() }).await;
+    let _ = store
+        .create(&TestEntity {
+            _id: "1".to_string(),
+            _name: "Test".to_string(),
+        })
+        .await;
     let _ = store.read::<TestEntity>("1").await;
-    let _ = store.update("1", &TestEntity { id: "1".to_string(), name: "Updated".to_string() }).await;
+    let _ = store
+        .update(
+            "1",
+            &TestEntity {
+                _id: "1".to_string(),
+                _name: "Updated".to_string(),
+            },
+        )
+        .await;
     let _ = store.delete("1").await;
     let _ = store.list::<TestEntity>().await;
-    
+
     // If we get here, all async operations completed
-    assert!(true);
 }
 
 #[tokio::test]
 async fn test_store_trait_error_handling_pattern() {
     // Verify that errors are properly typed
     let store = MockStore::new();
-    
+
     let result: Result<Option<TestEntity>, PersistenceError> = store.read("nonexistent").await;
-    
+
     match result {
         Ok(option) => {
             // Should return None for not found
@@ -151,8 +167,8 @@ async fn test_store_trait_error_handling_pattern() {
         }
         Err(e) => {
             // If error occurs, it should be PersistenceError
-            let _error_msg = format!("{}", e);
-            assert!(true);
+            let _error_msg = format!("{e}");
+            // Error handling verified
         }
     }
 }
@@ -162,13 +178,12 @@ async fn test_store_trait_error_handling_pattern() {
 fn test_store_send_sync() {
     fn assert_send<T: Send>() {}
     fn assert_sync<T: Sync>() {}
-    
+
     // MockStore should be Send + Sync
     assert_send::<MockStore>();
     assert_sync::<MockStore>();
-    
+
     // Store trait requires Send + Sync bounds
     // Note: Store trait itself is not object-safe due to generic methods,
     // but implementations must be Send + Sync
 }
-

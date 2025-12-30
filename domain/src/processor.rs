@@ -13,11 +13,16 @@ pub struct DomainProcessor {
 
 impl DomainProcessor {
     /// Create a new domain processor with a handler registry
+    #[must_use]
     pub fn new(handlers: Arc<HandlerRegistry>) -> Self {
         Self { handlers }
     }
 
     /// Process a domain entity
+    ///
+    /// # Errors
+    /// Returns `DomainError::HandlerNotFound` if no handler is registered for the given operation type.
+    /// Returns other `DomainError` variants if the handler processing fails.
     pub async fn process(
         &self,
         entity: DomainEntity,
@@ -38,4 +43,3 @@ impl DomainProcessor {
         handler.handle(&mut context, &entity).await
     }
 }
-

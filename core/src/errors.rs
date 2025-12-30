@@ -26,4 +26,3 @@ pub enum CoreError {
     #[error("Bridge error: {0}")]
     Bridge(String),
 }
-

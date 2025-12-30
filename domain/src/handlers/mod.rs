@@ -25,6 +25,7 @@ pub struct HandlerRegistry {
 
 impl HandlerRegistry {
     /// Create a new handler registry
+    #[must_use]
     pub fn new() -> Self {
         Self {
             handlers: HashMap::new(),
@@ -37,6 +38,7 @@ impl HandlerRegistry {
     }
 
     /// Get a handler for an operation type
+    #[must_use]
     pub fn get_handler(&self, operation_type: &str) -> Option<&Arc<dyn OperationHandler>> {
         self.handlers.get(operation_type)
     }
@@ -47,4 +49,3 @@ impl Default for HandlerRegistry {
         Self::new()
     }
 }
-

@@ -75,3 +75,32 @@ run = "cd tailwind && npx vite build --watch"
 [assets-watch]
 description = "Watch mode for both icons and Tailwind CSS (runs both watch tasks in parallel)"
 run = "mise run icons-watch & mise run tailwind-watch & wait"
+
+[fmt-check]
+description = "Check that code is properly formatted without making changes"
+run = "cargo fmt -- --check"
+
+[fmt]
+description = "Format all Rust code"
+run = "cargo fmt"
+
+[clippy]
+description = "Run clippy linter and deny all warnings"
+run = "cargo clippy --all-targets --all-features -- -D warnings"
+
+[test]
+description = "Run all tests"
+run = "cargo test"
+
+[quality]
+description = "Run all quality checks (formatting, linting, tests, npm audits, file size checks)"
+depends = ["build-assets"]
+run = "bash .mise/shell/quality.sh"
+
+[npm-audit]
+description = "Run npm audit for all Node.js projects (icons and tailwind)"
+run = "bash .mise/shell/npm-audit.sh"
+
+[file-size-check]
+description = "Check for Rust source files over 200 lines and warn about refactoring needs"
+run = "bash .mise/shell/file-size-check.sh"

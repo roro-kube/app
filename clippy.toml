@@ -1,0 +1,4 @@
+# Maximum strictness thresholds
+cognitive-complexity-threshold = 15
+type-complexity-threshold = 250
+

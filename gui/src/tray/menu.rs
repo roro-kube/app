@@ -1,8 +1,7 @@
 /// Menu creation and management for the system tray
-/// 
+///
 /// Uses Dioxus Desktop's native menu types which integrate seamlessly
 /// with the Dioxus event system.
-
 use dioxus::desktop::trayicon::menu::{Menu, MenuItem};
 
 /// Builder for creating system tray menus
@@ -17,7 +16,7 @@ impl TrayMenuBuilder {
     }
 
     /// Add a menu item to the menu
-    /// 
+    ///
     /// # Arguments
     /// * `label` - The text label for the menu item
     /// * `enabled` - Whether the menu item is enabled
@@ -29,25 +28,14 @@ impl TrayMenuBuilder {
         self
     }
 
-    /// Add a separator to the menu
-    /// 
-    /// Note: Separator support may be limited depending on the Dioxus menu API.
-    /// This is a placeholder for future functionality.
-    #[allow(dead_code)]
-    pub fn add_separator(self) -> Self {
-        // Separator functionality not yet implemented
-        // Menu items can be added with empty labels as a workaround if needed
-        self
-    }
-
     /// Build the menu from the configured items
-    /// 
+    ///
     /// Returns the constructed Menu that can be attached to a tray icon.
     pub fn build(self) -> Menu {
         let menu = Menu::new();
         for item in self.items {
             if let Err(e) = menu.append(&item) {
-                eprintln!("Failed to append menu item: {}", e);
+                eprintln!("Failed to append menu item: {e}");
             }
         }
         menu
@@ -61,7 +49,7 @@ impl Default for TrayMenuBuilder {
 }
 
 /// Creates the default system tray menu
-/// 
+///
 /// This is a convenience function that creates a basic menu with common items.
 /// For more control, use `TrayMenuBuilder` directly.
 pub fn create_default_tray_menu() -> Menu {

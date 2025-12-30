@@ -9,4 +9,3 @@
 // Validation functions will be implemented later when schemas are defined
 // Example:
 // pub fn validate_input(input: &str) -> Result<(), ValidationError>
-

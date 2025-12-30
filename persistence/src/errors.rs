@@ -22,4 +22,3 @@ pub enum PersistenceError {
     #[error("Serialization error: {0}")]
     Serialization(String),
 }
-
