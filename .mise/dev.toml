@@ -1,0 +1,31 @@
+[clean]
+description = "Clean all build artifacts"
+run = "cargo clean"
+
+[clean-assets]
+description = "Clean generated assets (icons dist directory and Tailwind output)"
+run = "cd icons && rm -rf dist && cd .. && rm -f gui/assets/tailwind.css"
+
+[doc]
+description = "Generate documentation for the entire workspace"
+run = "cargo doc --workspace --no-deps"
+
+[doc-open]
+description = "Generate documentation and open it in the browser"
+run = "cargo doc --workspace --no-deps --open"
+
+[install-deps]
+description = "Install all dependencies (Rust dependencies via cargo build, Node.js dependencies for icons and tailwind)"
+depends = ["icons-install", "tailwind-install"]
+run = "cargo build --workspace"
+
+[setup]
+description = "Complete project setup (install dependencies, build workspace, build assets). Note: Database initialization is separate (use cli-init-db)"
+depends = ["install-deps", "build-assets"]
+run = "echo 'Setup complete! Run \"mise run cli-init-db\" to initialize the database.'"
+
+[dev]
+description = "Run in development mode (watch assets and run GUI)"
+depends = ["build-assets"]
+run = "mise run assets-watch & mise run run-gui & wait"
+

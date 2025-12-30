@@ -23,3 +23,56 @@ description = "Build the GUI crate"
 depends = ["build-assets"]
 run = "cargo build -p roro_gui"
 
+[build-cli]
+description = "Build the CLI crate"
+run = "cargo build -p roro_cli"
+
+[check]
+description = "Check the entire workspace for compilation errors without building"
+run = "cargo check --workspace"
+
+[check-persistence]
+description = "Check the persistence crate for compilation errors"
+run = "cargo check -p roro_persistence"
+
+[check-domain]
+description = "Check the domain crate for compilation errors"
+run = "cargo check -p roro_domain"
+
+[check-core]
+description = "Check the core crate for compilation errors"
+run = "cargo check -p roro_core"
+
+[check-gui]
+description = "Check the GUI crate for compilation errors"
+run = "cargo check -p roro_gui"
+
+[check-cli]
+description = "Check the CLI crate for compilation errors"
+run = "cargo check -p roro_cli"
+
+[build-release]
+description = "Build the entire workspace in release mode"
+run = "cargo build --workspace --release"
+
+[build-release-persistence]
+description = "Build the persistence crate in release mode"
+run = "cargo build -p roro_persistence --release"
+
+[build-release-domain]
+description = "Build the domain crate in release mode"
+run = "cargo build -p roro_domain --release"
+
+[build-release-core]
+description = "Build the core crate in release mode"
+run = "cargo build -p roro_core --release"
+
+[build-release-gui]
+description = "Build the GUI crate in release mode"
+depends = ["build-assets"]
+run = "cargo build -p roro_gui --release"
+
+[build-release-cli]
+description = "Build the CLI crate in release mode"
+run = "cargo build -p roro_cli --release"
+

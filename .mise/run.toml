@@ -7,3 +7,15 @@ run = "cargo run -p roro_gui"
 description = "Start the backlog.md browser interface server"
 run = "mise exec -- backlog browser"
 
+[run-cli]
+description = "Run CLI commands (pass arguments after --)"
+run = "cargo run -p roro_cli --"
+
+[cli-status]
+description = "Run the CLI status command"
+run = "cargo run -p roro_cli -- status"
+
+[cli-init-db]
+description = "Initialize the database"
+run = "cargo run -p roro_cli -- init-db"
+
