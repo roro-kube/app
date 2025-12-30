@@ -1,0 +1,9 @@
+[run-gui]
+description = "Run the GUI crate"
+depends = ["build-assets"]
+run = "cargo run -p roro_gui"
+
+[backlog-server]
+description = "Start the backlog.md browser interface server"
+run = "mise exec -- backlog browser"
+

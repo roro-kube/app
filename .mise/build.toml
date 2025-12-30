@@ -1,0 +1,25 @@
+[build-workspace]
+description = "Build the entire workspace"
+run = "cargo build --workspace"
+
+[build-persistence]
+description = "Build the persistence crate"
+run = "cargo build -p roro_persistence"
+
+[build-domain]
+description = "Build the domain crate"
+run = "cargo build -p roro_domain"
+
+[build-core]
+description = "Build the core crate"
+run = "cargo build -p roro_core"
+
+[build-assets]
+description = "Build all GUI assets (icons and Tailwind CSS)"
+depends = ["icons-build", "tailwind-build"]
+
+[build-gui]
+description = "Build the GUI crate"
+depends = ["build-assets"]
+run = "cargo build -p roro_gui"
+

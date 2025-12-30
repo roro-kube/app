@@ -1,0 +1,44 @@
+[icons-install]
+description = "Install icon dependencies (heroicons, sharp, png2icons)"
+run = "cd icons && npm install"
+
+[tailwind-install]
+description = "Install Tailwind CSS dependencies (tailwindcss, postcss, vite, autoprefixer)"
+run = "cd tailwind && npm install"
+
+[tailwind-build]
+description = "Build Tailwind CSS and output compiled CSS to gui/assets/tailwind.css"
+run = "cd tailwind && npm run build"
+
+[icons-clean]
+description = "Remove generated icon files from dist directory"
+run = "cd icons && rm -rf dist"
+
+[icons-build-heroicons]
+description = "Copy Heroicons to GUI assets directory"
+run = "cd icons && node scripts/copy-icons.js"
+
+[icons-build-branding]
+description = "Generate platform-specific icons from SVG source"
+run = "cd icons && node scripts/build.mjs"
+
+[icons-build]
+description = "Build all icons (branding and heroicons)"
+depends = ["icons-build-branding", "icons-build-heroicons"]
+
+[icons-verify]
+description = "Verify all generated icon files exist and are valid"
+run = "cd icons && node scripts/verify.mjs"
+
+[icons-watch]
+description = "Watch mode for icon builds (re-runs icon build on changes to icon scripts or source files)"
+run = "cd icons && while true; do node scripts/copy-icons.js; sleep 2; done"
+
+[tailwind-watch]
+description = "Watch mode for Tailwind CSS builds using Vite's watch mode"
+run = "cd tailwind && npx vite build --watch"
+
+[assets-watch]
+description = "Watch mode for both icons and Tailwind CSS (runs both watch tasks in parallel)"
+run = "mise run icons-watch & mise run tailwind-watch & wait"
+
