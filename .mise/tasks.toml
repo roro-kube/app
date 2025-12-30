@@ -10,3 +10,7 @@ run = "taskkill -F -IM roro-kube.exe 2>/dev/null || true"
 description = "Run the application"
 depends = ["kill"]
 run = "cargo run"
+
+[backlog-server]
+description = "Start the backlog.md browser interface server"
+run = "mise exec -- backlog browser"

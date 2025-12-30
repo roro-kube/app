@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Initialize the Domain layer crate that contains the core business logic and domain models. This layer is independent of infrastructure concerns (databases, UIs, external services) and implements the domain operations for managing Kubernetes apps, instances, and deployments. It defines domain entities, processing logic, and handler patterns that encapsulate business rules.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `domain/Cargo.toml` exists with crate configuration
 - [ ] `domain/src/lib.rs` exists and exports the public API
 - [ ] `domain/src/types.rs` exists with domain model definitions
@@ -31,4 +34,17 @@ Initialize the Domain layer crate that contains the core business logic and doma
 - [ ] Domain models are defined as Rust structs/enums
 - [ ] Handler trait is defined with async methods
 - [ ] Error types use `thiserror` for error handling
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

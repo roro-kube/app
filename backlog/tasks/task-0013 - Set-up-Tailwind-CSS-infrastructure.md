@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Set up the infrastructure for Tailwind CSS integration, including directory structure, configuration files, and dependencies. Tailwind CSS provides utility-first styling that keeps the CSS bundle small through purging unused styles. This task establishes the foundation for styling the GUI application with Tailwind CSS, separate from the Rust code.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `tailwind/` directory exists at project root
 - [ ] `tailwind/package.json` exists with Tailwind CSS, PostCSS, and Vite dependencies
 - [ ] `tailwind/tailwind.config.js` exists with configuration
@@ -31,4 +34,17 @@ Set up the infrastructure for Tailwind CSS integration, including directory stru
 - [ ] `package.json` includes a build script
 - [ ] Mise task exists for installing Tailwind dependencies (e.g., `mise run tailwind-install` executes `npm install` in tailwind directory)
 - [ ] All dependencies are installable via mise task
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

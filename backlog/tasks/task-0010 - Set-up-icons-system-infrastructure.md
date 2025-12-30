@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Set up the infrastructure for managing SVG icons used throughout the GUI application. This includes creating the icons directory structure, installing icon library dependencies (e.g., Heroicons), and establishing the foundation for icon management. Icons should be easy to add/remove, consistent in style, optimized for size, and accessible from Rust code. This task establishes the directory structure and dependencies needed for the icon system.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `icons/` directory exists at project root
 - [ ] `icons/package.json` exists with icon library dependency (e.g., heroicons)
 - [ ] `icons/branding/` directory exists for custom branding icons
@@ -28,4 +31,17 @@ Set up the infrastructure for managing SVG icons used throughout the GUI applica
 - [ ] Mise task exists for installing icon dependencies (e.g., `mise run icons-install` executes `npm install` in icons directory)
 - [ ] Icon library (e.g., heroicons) is installable via mise task
 - [ ] Directory structure matches the architecture specification
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

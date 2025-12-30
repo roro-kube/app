@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Create a reusable icon component in the GUI crate that allows Rust code to easily display SVG icons. The component should load icons from the assets directory using `include_str!` and render them in Dioxus components. This provides a clean, type-safe way to use icons throughout the GUI application without hardcoding SVG content in components.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `gui/src/icons.rs` module exists with Icon component
 - [ ] Icon component accepts `name`, optional `class`, and optional `size` parameters
 - [ ] Component loads SVG icons from `gui/assets/icons/` using `include_str!`
@@ -29,4 +32,17 @@ Create a reusable icon component in the GUI crate that allows Rust code to easil
 - [ ] Component handles missing icons gracefully (returns default icon or error)
 - [ ] Icon component can be imported and used in other GUI components
 - [ ] At least one icon can be successfully rendered in a test component
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

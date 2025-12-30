@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Implement menu functionality that displays when the user clicks (or right-clicks, depending on platform conventions) the system tray icon. The menu provides the primary user interface for interacting with the application since it runs only in the system tray. This menu should follow platform conventions: right-click menu on Windows and click menu on macOS.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [x] Clicking the tray icon on macOS displays a menu
 - [x] Right-clicking the tray icon on Windows displays a menu
 - [x] Menu appears reliably when the icon is clicked/right-clicked
@@ -27,17 +30,21 @@ Implement menu functionality that displays when the user clicks (or right-clicks
 - [x] Menu dismisses properly when user clicks outside or selects an item
 - [x] Menu interaction works without errors on Windows
 - [x] Menu interaction works without errors on macOS
+<!-- AC:END -->
 
-## Implementation Plan (the how)
+## Implementation Plan
 
+<!-- SECTION:PLAN:BEGIN -->
 1. Import `Menu` and `MenuItem` types from the `tray-icon` crate
 2. Create a menu with at least one placeholder menu item (e.g., "Quit" or "About")
 3. Use `with_menu()` method on `TrayIconBuilder` to attach the menu to the tray icon
 4. The `tray-icon` crate should handle platform-specific behavior automatically (right-click on Windows, click on macOS)
 5. Test that the menu appears and dismisses correctly on the current platform
+<!-- SECTION:PLAN:END -->
 
-## Implementation Notes (for reviewers)
+## Implementation Notes
 
+<!-- SECTION:NOTES:BEGIN -->
 The menu functionality has been successfully implemented following the plan:
 
 - **Menu Creation**: Created a `Menu` instance and added a placeholder "About" menu item using `MenuItem::new()`
@@ -49,3 +56,4 @@ The menu functionality has been successfully implemented following the plan:
   - `src/main.rs`: Added menu creation and attachment (lines 20-23, 29)
 
 The implementation is minimal but functional, providing a foundation for adding more menu items in future tasks. The menu will appear when the tray icon is clicked/right-clicked according to platform conventions, and will dismiss when the user clicks outside or selects an item (handled automatically by the tray-icon crate).
+<!-- SECTION:NOTES:END -->

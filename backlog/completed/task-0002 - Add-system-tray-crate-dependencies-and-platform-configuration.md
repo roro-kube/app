@@ -14,21 +14,32 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Add the necessary Rust crate dependencies for system tray functionality on Windows and macOS platforms. This includes selecting appropriate system tray crates (such as `tao` with `tray-icon` or similar) and configuring the project to support cross-platform system tray operations. The configuration should account for platform-specific differences between Windows and macOS while providing a unified interface for the application.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [x] System tray crate dependencies added to `Cargo.toml` (e.g., `tray-icon`, `tao`, or equivalent)
 - [x] Dependencies are configured for both Windows and macOS targets
 - [x] Platform-specific features or configurations are properly set up in `Cargo.toml`
 - [x] Project compiles successfully with the new dependencies on Windows
 - [x] Project compiles successfully with the new dependencies on macOS (or cross-compilation is configured)
 - [x] No build errors or missing dependency warnings
+<!-- AC:END -->
 
-## Implementation Notes (for reviewers)
+## Implementation Plan
 
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
 - Added `tray-icon = "0.19"` and `tao = "0.30"` as direct dependencies to `Cargo.toml`
 - Both crates automatically handle platform-specific differences between Windows and macOS
 - Added platform-specific dependency sections (Windows and macOS) to document cross-platform support
@@ -36,4 +47,5 @@ Add the necessary Rust crate dependencies for system tray functionality on Windo
 - Project compiles successfully on Windows with no build errors or warnings
 - Dependencies are version-locked and compatible with Dioxus 0.6 desktop
 - macOS support is configured via the same dependencies (cross-compilation can be set up separately if needed)
+<!-- SECTION:NOTES:END -->
 

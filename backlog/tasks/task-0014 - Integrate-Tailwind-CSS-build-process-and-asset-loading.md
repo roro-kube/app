@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Integrate the Tailwind CSS build process to compile CSS and load it in the GUI application. This includes configuring Vite to output compiled CSS to the GUI assets directory and integrating the stylesheet into the Dioxus application. This enables the GUI to use Tailwind utility classes for styling.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] Vite build configuration outputs compiled CSS to `gui/assets/tailwind.css`
 - [ ] Mise task exists for building Tailwind CSS (e.g., `mise run tailwind-build` executes `npm run build` in tailwind directory)
 - [ ] Running mise task successfully compiles CSS
@@ -29,4 +32,17 @@ Integrate the Tailwind CSS build process to compile CSS and load it in the GUI a
 - [ ] Dark mode classes work when dark mode is enabled (e.g., `dark:bg-zinc-900`)
 - [ ] CSS is properly purged of unused styles during build
 - [ ] Build process can be run repeatedly without errors
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

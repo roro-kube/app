@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Implement the icon copy script and build process that copies icons from the icon library (e.g., Heroicons) to the GUI assets directory. This script maps internal icon names to library icon names and automates the process of copying SVG icons to the correct location. This enables the GUI application to use icons that are managed separately from the Rust code, making it easy to update icons without touching Rust code.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `icons/copy-icons.js` script exists and copies icons from library to GUI assets
 - [ ] Icon mapping file or structure exists that maps internal names to library names (e.g., `home` → `home`)
 - [ ] Script copies icons to `gui/assets/icons/` directory
@@ -28,4 +31,17 @@ Implement the icon copy script and build process that copies icons from the icon
 - [ ] Mise task exists for building icons (e.g., `mise run icons-build` executes `npm run build` in icons directory)
 - [ ] Running mise task successfully copies icons to GUI assets
 - [ ] At least one test icon is successfully copied and accessible in GUI assets directory
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 

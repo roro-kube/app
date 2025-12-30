@@ -46,7 +46,7 @@ backlog task list
 Use the CLI ONLY to:
 - Allocate a task ID
 - Create the task file
-- Set minimal metadata (labels, priority, assignee, status, deps)
+- Set minimal metadata (labels, priority, assignee, status, dependencies, parent)
 
 **Keep this phase intentionally minimal.** You're just creating the structure.
 
@@ -55,12 +55,24 @@ Use the CLI ONLY to:
 mise exec -- backlog task create "Add user authentication system" -l auth,backend --priority high
 ```
 
-This generates:
-```
-backlog/tasks/task-42 - Add user authentication system.md
+This generates a minimal file with only frontmatter:
+```markdown
+---
+id: task-42
+title: Add user authentication system
+status: To Do
+assignee: []
+created_date: 'YYYY-MM-DD HH:mm'
+labels:
+  - auth
+  - backend
+dependencies: []
+priority: high
+---
+
 ```
 
-At this point, the task is **incomplete by design**.
+At this point, the task is **incomplete by design** - it has no content sections.
 
 ---
 
@@ -73,39 +85,68 @@ backlog/tasks/task-<id> - <title>.md
 
 **You do NOT use the CLI for this.** All task meaning MUST be written directly in this file.
 
+Add the required sections with HTML comment markers:
+- `## Description` with `<!-- SECTION:DESCRIPTION:BEGIN -->` ... `<!-- SECTION:DESCRIPTION:END -->`
+- `## Acceptance Criteria` with `<!-- AC:BEGIN -->` ... `<!-- AC:END -->`
+- `## Implementation Plan` with `<!-- SECTION:PLAN:BEGIN -->` ... `<!-- SECTION:PLAN:END -->` (added later)
+- `## Implementation Notes` with `<!-- SECTION:NOTES:BEGIN -->` ... `<!-- SECTION:NOTES:END -->` (added later)
+
+See the "Canonical Task Anatomy" section above for the exact format.
+
 ---
 
 ## Canonical Task Anatomy (REQUIRED)
 
 ```markdown
-# task-<id> - <Title>
+---
+id: task-<id>
+title: <Title>
+status: To Do
+assignee: []
+created_date: 'YYYY-MM-DD HH:mm'
+labels:
+  - label1
+  - label2
+dependencies: []
+priority: medium
+---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Explain the goal, scope, and reason for the task.
 No implementation details.
 No code snippets.
 Answer: "Why does this task exist?"
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] Outcome-based and verifiable
 - [ ] No implementation steps
 - [ ] Collectively define "done"
+<!-- AC:END -->
 
-## Implementation Plan (the how)
+## Implementation Plan
 (Added only AFTER task status changes to "In Progress", before coding)
 
+<!-- SECTION:PLAN:BEGIN -->
 1. Step-by-step approach
 2. Share with user and get approval BEFORE coding
+<!-- SECTION:PLAN:END -->
 
-## Implementation Notes (for reviewers)
+## Implementation Notes
 (Added only AFTER implementation is complete)
 
+<!-- SECTION:NOTES:BEGIN -->
 - Summary of approach
 - Trade-offs made
 - Files added or modified
+<!-- SECTION:NOTES:END -->
 ```
+
+**Important**: All content sections must be wrapped in HTML comment markers as shown above. These markers are required for proper parsing by the backlog CLI.
 
 ---
 
@@ -186,7 +227,7 @@ Answer: "Why does this task exist?"
 
 2. **Add Implementation Plan** (Markdown):
    - Edit the task Markdown file
-   - Add or update the "Implementation Plan" section
+   - Add or update the "Implementation Plan" section with `<!-- SECTION:PLAN:BEGIN -->` markers
    - Share the plan with the user and wait for approval BEFORE coding
 
 3. **Implement**: Follow the plan and acceptance criteria
@@ -196,6 +237,7 @@ Answer: "Why does this task exist?"
 
 5. **Add Implementation Notes** (Markdown):
    - Add summary, trade-offs, and files modified
+   - Use `<!-- SECTION:NOTES:BEGIN -->` markers
 
 6. **Mark Done** (CLI):
    ```bash
@@ -222,29 +264,34 @@ A task is **Done** ONLY when **ALL** of the following are complete:
 
 ## Critical Mistakes to Avoid
 
-❌ **NEVER** use `--ac`, `--plan`, or `--notes` flags during task creation  
+❌ **NEVER** use `--description`, `--ac`, `--plan`, or `--notes` flags during task creation  
 ❌ **NEVER** edit task metadata in Markdown frontmatter (use CLI)  
 ❌ **NEVER** depend on future tasks (only reference lower task IDs)  
 ❌ **NEVER** mark task Done without completing ALL DoD items  
 ❌ **NEVER** execute backlog commands directly (always use `mise exec -- backlog`)  
 ❌ **NEVER** write implementation details in Description  
 ❌ **NEVER** write implementation steps in Acceptance Criteria  
+❌ **NEVER** create content sections without HTML comment markers
+
+**Why avoid CLI content flags?** The CLI's multiline handling is problematic and can produce incorrect formatting (e.g., literal `\n` characters instead of actual newlines). Always edit the markdown file directly to ensure proper formatting.  
 
 ---
 
 ## Phase Discipline: What Goes Where
 
 ### Creation Phase
-- **CLI**: Title, labels, priority, assignee, status, dependencies
-- **Markdown File**: Description, Acceptance Criteria
+- **CLI**: Title, labels, priority, assignee, status, dependencies, parent
+- **Markdown File**: Description (with `<!-- SECTION:DESCRIPTION:BEGIN -->` markers), Acceptance Criteria (with `<!-- AC:BEGIN -->` markers)
 
 ### Implementation Phase
 - **CLI**: Status change to "In Progress", assign to self
-- **Markdown File**: Implementation Plan (after approval, before coding)
+- **Markdown File**: Implementation Plan (with `<!-- SECTION:PLAN:BEGIN -->` markers) - added after approval, before coding
 
 ### Wrap-up Phase
-- **Markdown File**: Mark ACs complete, add Implementation Notes
+- **Markdown File**: Mark ACs complete, add Implementation Notes (with `<!-- SECTION:NOTES:BEGIN -->` markers)
 - **CLI**: Status change to "Done"
+
+**Important**: All content sections must include the HTML comment markers as shown in the "Canonical Task Anatomy" section. These markers are required for proper parsing by the backlog CLI.
 
 ---
 
@@ -268,6 +315,86 @@ When creating a task:
 
 ---
 
+## Task File Format Examples
+
+### What CLI Creates (Minimal)
+
+When you run:
+```bash
+mise exec -- backlog task create "Add user authentication" -l auth,backend --priority high
+```
+
+The CLI creates a file with only frontmatter:
+```markdown
+---
+id: task-42
+title: Add user authentication
+status: To Do
+assignee: []
+created_date: '2025-12-30 12:00'
+labels:
+  - auth
+  - backend
+dependencies: []
+priority: high
+---
+
+```
+
+### What You Must Add (Properly Formatted)
+
+After CLI creation, manually edit the file to add content sections with HTML comment markers:
+
+```markdown
+---
+id: task-42
+title: Add user authentication
+status: To Do
+assignee: []
+created_date: '2025-12-30 12:00'
+labels:
+  - auth
+  - backend
+dependencies: []
+priority: high
+---
+
+## Description
+
+<!-- SECTION:DESCRIPTION:BEGIN -->
+Add user authentication system to allow users to log in securely.
+No implementation details here - just the "why".
+<!-- SECTION:DESCRIPTION:END -->
+
+## Acceptance Criteria
+
+<!-- AC:BEGIN -->
+- [ ] User can log in with valid credentials
+- [ ] Invalid credentials produce a clear error message
+- [ ] Session persists across page refreshes
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
+```
+
+**Key Points**:
+- CLI creates minimal structure (frontmatter only)
+- You manually add all content sections
+- All content sections must include HTML comment markers
+- Markers are required: `<!-- SECTION:DESCRIPTION:BEGIN -->`, `<!-- AC:BEGIN -->`, etc.
+
+---
+
 ## Quick Reference: DO vs DON'T
 
 ### Task Creation
@@ -275,8 +402,8 @@ When creating a task:
 | Task | ✅ DO | ❌ DON'T |
 |------|-------|----------|
 | Create task | `mise exec -- backlog task create "Title" -l label` | `mise exec -- backlog task create "Title" -d "..." --ac "..."` |
-| Add description | Edit Markdown file directly | `mise exec -- backlog task edit 42 -d "..."` |
-| Add AC | Edit Markdown file directly | `mise exec -- backlog task edit 42 --ac "..."` |
+| Add description | Edit Markdown file directly with HTML comment markers | `mise exec -- backlog task edit 42 -d "..."` or `--description "..."` |
+| Add AC | Edit Markdown file directly with `<!-- AC:BEGIN -->` markers | `mise exec -- backlog task edit 42 --ac "..."` |
 | Change status | `mise exec -- backlog task edit 42 -s "In Progress"` | Edit frontmatter in Markdown |
 
 ### Task Implementation
@@ -284,6 +411,8 @@ When creating a task:
 | Task | ✅ DO | ❌ DON'T |
 |------|-------|----------|
 | Mark AC complete | Edit Markdown: `- [ ]` → `- [x]` | Use CLI flags |
-| Add plan | Edit Markdown file directly | `mise exec -- backlog task edit 42 --plan "..."` |
-| Add notes | Edit Markdown file directly | `mise exec -- backlog task edit 42 --notes "..."` |
+| Add plan | Edit Markdown file directly with `<!-- SECTION:PLAN:BEGIN -->` markers | `mise exec -- backlog task edit 42 --plan "..."` |
+| Add notes | Edit Markdown file directly with `<!-- SECTION:NOTES:BEGIN -->` markers | `mise exec -- backlog task edit 42 --notes "..."` |
 | Change status | `mise exec -- backlog task edit 42 -s Done` | Edit frontmatter in Markdown |
+
+**Formatting Note**: When manually editing markdown files, always include the HTML comment markers (`<!-- SECTION:DESCRIPTION:BEGIN -->`, `<!-- AC:BEGIN -->`, etc.) as shown in the "Canonical Task Anatomy" section. These markers are required for proper CLI parsing.

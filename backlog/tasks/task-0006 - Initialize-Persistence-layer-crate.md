@@ -13,12 +13,15 @@ dependencies:
 priority: high
 ---
 
-## Description (the why)
+## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Initialize the Persistence layer crate that will handle all data storage and retrieval operations. This layer provides the foundation for storing app definitions, execution state, and configuration data. It defines the data models (entities) and store traits that abstract database operations, enabling the rest of the application to work with data without knowing implementation details.
+<!-- SECTION:DESCRIPTION:END -->
 
-## Acceptance Criteria (the what)
+## Acceptance Criteria
 
+<!-- AC:BEGIN -->
 - [ ] `persistence/Cargo.toml` exists with crate configuration
 - [ ] `persistence/src/lib.rs` exists and exports the public API
 - [ ] `persistence/src/models/mod.rs` exists with model module structure
@@ -29,4 +32,17 @@ Initialize the Persistence layer crate that will handle all data storage and ret
 - [ ] Crate follows the structure defined in architecture.md Layer 4 (Persistence Layer)
 - [ ] Store trait is defined as an async trait with basic CRUD operations
 - [ ] Error types use `thiserror` for error handling
+<!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+(Added only after status changes to "In Progress")
+<!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+(Added only after implementation is complete)
+<!-- SECTION:NOTES:END -->
 
