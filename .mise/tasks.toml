@@ -4,24 +4,48 @@ run = "cargo build --workspace"
 
 [build-persistence]
 description = "Build the persistence crate"
-run = "cargo build -p persistence"
+run = "cargo build -p roro_persistence"
 
 [build-domain]
 description = "Build the domain crate"
-run = "cargo build -p domain"
+run = "cargo build -p roro_domain"
 
 [build-core]
 description = "Build the core crate"
-run = "cargo build -p core"
+run = "cargo build -p roro_core"
 
 [build-gui]
 description = "Build the GUI crate"
-run = "cargo build -p gui"
+run = "cargo build -p roro_gui"
 
 [run-gui]
 description = "Run the GUI crate"
-run = "cargo run -p gui"
+run = "cargo run -p roro_gui"
 
 [backlog-server]
 description = "Start the backlog.md browser interface server"
 run = "mise exec -- backlog browser"
+
+[icons-install]
+description = "Install icon dependencies (heroicons, sharp, png2icons)"
+run = "cd icons && npm install"
+
+[icons-clean]
+description = "Remove generated icon files from dist directory"
+run = "cd icons && rm -rf dist"
+
+[icons-build-heroicons]
+description = "Copy Heroicons to GUI assets directory"
+run = "cd icons && node scripts/copy-icons.js"
+
+[icons-build-branding]
+description = "Generate platform-specific icons from SVG source"
+run = "cd icons && node scripts/build.mjs"
+
+[icons-build]
+description = "Build all icons (branding and heroicons)"
+depends = ["icons-build-branding", "icons-build-heroicons"]
+
+[icons-verify]
+description = "Verify all generated icon files exist and are valid"
+run = "cd icons && node scripts/verify.mjs"

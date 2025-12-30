@@ -1,16 +1,16 @@
 [package]
-name = "core"
+name = "roro_core"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 
 [lib]
-name = "core"
+name = "roro_core"
 path = "src/lib.rs"
 
 [dependencies]
-persistence = { path = "../persistence" }
-domain = { path = "../domain" }
+roro_persistence = { path = "../persistence" }
+roro_domain = { path = "../domain" }
 thiserror.workspace = true
 
 [lints]

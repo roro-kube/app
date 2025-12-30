@@ -1,11 +1,11 @@
 [package]
-name = "domain"
+name = "roro_domain"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 
 [lib]
-name = "domain"
+name = "roro_domain"
 path = "src/lib.rs"
 
 [dependencies]

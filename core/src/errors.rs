@@ -4,8 +4,8 @@
 
 use thiserror::Error;
 
-use domain::DomainError;
-use persistence::PersistenceError;
+use roro_domain::DomainError;
+use roro_persistence::PersistenceError;
 
 /// Errors that can occur in the core layer
 #[derive(Debug, Error)]

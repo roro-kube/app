@@ -1,0 +1,14 @@
+{
+  "name": "roro-kube-icons",
+  "version": "0.1.0",
+  "description": "Icon management system for roro-kube GUI application",
+  "type": "module",
+  "dependencies": {
+    "heroicons": "^2.1.0"
+  },
+  "devDependencies": {
+    "@ctjs/png2icons": "^3.0.3",
+    "sharp": "^0.33.0"
+  }
+}
+

@@ -1,9 +1,10 @@
 ---
 id: task-0010
 title: Set up icons system infrastructure
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-29 22:59'
+updated_date: '2025-12-30 14:17'
 labels:
   - frontend
   - assets
@@ -11,6 +12,7 @@ labels:
 dependencies:
   - task-0009
 priority: high
+ordinal: 6000
 ---
 
 ## Description
@@ -20,18 +22,14 @@ Set up the infrastructure for managing SVG icons used throughout the GUI applica
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
 <!-- AC:BEGIN -->
-- [ ] `icons/` directory exists at project root
-- [ ] `icons/package.json` exists with icon library dependency (e.g., heroicons)
-- [ ] `icons/branding/` directory exists for custom branding icons
-- [ ] `icons/dist/` directory structure exists with subdirectories for `macos/`, `windows/`, and `png/`
-- [ ] `icons/scripts/` directory exists for build and verification scripts
-- [ ] `package.json` includes a build script that can be run via npm
-- [ ] Mise task exists for installing icon dependencies (e.g., `mise run icons-install` executes `npm install` in icons directory)
-- [ ] Icon library (e.g., heroicons) is installable via mise task
-- [ ] Directory structure matches the architecture specification
+- [ ] #1 `icons/` directory exists at project root
+- [ ] #2 `icons/package.json` exists with icon library dependency (e.g., heroicons)
+- [ ] #3 `icons/branding/` directory exists for custom branding icons
+- [ ] #4 `icons/dist/` directory structure exists with subdirectories for `macos/`, `windows/`, and `png/`
+- [ ] #5 `icons/scripts/` directory exists for build and verification scripts
+- [ ] #6 `package.json` includes a build script that can be run via npm
+- [ ] #7 Mise task exists for installing icon dependencies (e.g., `mise run icons-install` executes `npm install` in icons directory)
+- [ ] #8 Icon library (e.g., heroicons) is installable via mise task
+- [ ] #9 Directory structure matches the architecture specification
 <!-- AC:END -->
-
-
-

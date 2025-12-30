@@ -1,11 +1,11 @@
 [package]
-name = "persistence"
+name = "roro_persistence"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 
 [lib]
-name = "persistence"
+name = "roro_persistence"
 path = "src/lib.rs"
 
 [dependencies]

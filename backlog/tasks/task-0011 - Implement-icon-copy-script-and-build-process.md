@@ -1,9 +1,10 @@
 ---
 id: task-0011
 title: Implement icon copy script and build process
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-29 22:59'
+updated_date: '2025-12-30 14:17'
 labels:
   - frontend
   - assets
@@ -11,6 +12,7 @@ labels:
 dependencies:
   - task-0010
 priority: high
+ordinal: 7000
 ---
 
 ## Description
@@ -20,18 +22,14 @@ Implement the icon copy script and build process that copies icons from the icon
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
 <!-- AC:BEGIN -->
-- [ ] `icons/copy-icons.js` script exists and copies icons from library to GUI assets
-- [ ] Icon mapping file or structure exists that maps internal names to library names (e.g., `home` → `home`)
-- [ ] Script copies icons to `gui/assets/icons/` directory
-- [ ] Copied icons follow naming convention (e.g., `{name}-outline.svg`)
-- [ ] Script handles errors gracefully (missing icons, missing directories, etc.)
-- [ ] `package.json` includes a `build` script that runs the copy script
-- [ ] Mise task exists for building icons (e.g., `mise run icons-build` executes `npm run build` in icons directory)
-- [ ] Running mise task successfully copies icons to GUI assets
-- [ ] At least one test icon is successfully copied and accessible in GUI assets directory
+- [ ] #1 `icons/copy-icons.js` script exists and copies icons from library to GUI assets
+- [ ] #2 Icon mapping file or structure exists that maps internal names to library names (e.g., `home` → `home`)
+- [ ] #3 Script copies icons to `gui/assets/icons/` directory
+- [ ] #4 Copied icons follow naming convention (e.g., `{name}-outline.svg`)
+- [ ] #5 Script handles errors gracefully (missing icons, missing directories, etc.)
+- [ ] #6 `package.json` includes a `build` script that runs the copy script
+- [ ] #7 Mise task exists for building icons (e.g., `mise run icons-build` executes `npm run build` in icons directory)
+- [ ] #8 Running mise task successfully copies icons to GUI assets
+- [ ] #9 At least one test icon is successfully copied and accessible in GUI assets directory
 <!-- AC:END -->
-
-
-

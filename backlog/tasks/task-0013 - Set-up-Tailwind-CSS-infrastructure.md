@@ -1,9 +1,10 @@
 ---
 id: task-0013
 title: Set up Tailwind CSS infrastructure
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-12-29 22:59'
+updated_date: '2025-12-30 14:49'
 labels:
   - frontend
   - assets
@@ -11,6 +12,7 @@ labels:
 dependencies:
   - task-0009
 priority: high
+ordinal: 1000
 ---
 
 ## Description
@@ -20,21 +22,17 @@ Set up the infrastructure for Tailwind CSS integration, including directory stru
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
 <!-- AC:BEGIN -->
-- [ ] `tailwind/` directory exists at project root
-- [ ] `tailwind/package.json` exists with Tailwind CSS, PostCSS, and Vite dependencies
-- [ ] `tailwind/tailwind.config.js` exists with configuration
-- [ ] Tailwind config includes content paths for scanning Rust files (`../gui/src/**/*.rs`)
-- [ ] Tailwind config includes theme extension for custom colors (if needed)
-- [ ] Tailwind config enables dark mode with `"class"` strategy
-- [ ] `tailwind/postcss.config.js` exists with PostCSS configuration
-- [ ] `tailwind/vite.config.ts` exists with Vite build configuration
-- [ ] `tailwind/src/tailwind.css` exists with Tailwind directives (`@tailwind base`, `@tailwind components`, `@tailwind utilities`)
-- [ ] `package.json` includes a build script
-- [ ] Mise task exists for installing Tailwind dependencies (e.g., `mise run tailwind-install` executes `npm install` in tailwind directory)
-- [ ] All dependencies are installable via mise task
+- [ ] #1 `tailwind/` directory exists at project root
+- [ ] #2 `tailwind/package.json` exists with Tailwind CSS, PostCSS, and Vite dependencies
+- [ ] #3 `tailwind/tailwind.config.js` exists with configuration
+- [ ] #4 Tailwind config includes content paths for scanning Rust files (`../gui/src/**/*.rs`)
+- [ ] #5 Tailwind config includes theme extension for custom colors (if needed)
+- [ ] #6 Tailwind config enables dark mode with `"class"` strategy
+- [ ] #7 `tailwind/postcss.config.js` exists with PostCSS configuration
+- [ ] #8 `tailwind/vite.config.ts` exists with Vite build configuration
+- [ ] #9 `tailwind/src/tailwind.css` exists with Tailwind directives (`@tailwind base`, `@tailwind components`, `@tailwind utilities`)
+- [ ] #10 `package.json` includes a build script
+- [ ] #11 Mise task exists for installing Tailwind dependencies (e.g., `mise run tailwind-install` executes `npm install` in tailwind directory)
+- [ ] #12 All dependencies are installable via mise task
 <!-- AC:END -->
-
-
-

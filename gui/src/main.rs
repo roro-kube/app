@@ -11,12 +11,41 @@ mod tray;
 
 // Placeholder modules for future Dioxus components
 mod components;
+mod icons;
 mod pages;
 mod layout;
 
+use dioxus::prelude::*;
+use components::Greeting;
+
 fn main() {
-    // Initialize and run the system tray application
-    // All business logic is delegated to the Core layer
-    tray::run_tray_app();
+    // Launch Dioxus desktop application first
+    // The tray icon will be initialized after Dioxus starts to avoid conflicts
+    // with macOS menu classes that both Dioxus and tray-icon use
+    dioxus::launch(App);
+}
+
+/// Main Dioxus application component
+#[allow(non_snake_case)]
+fn App() -> Element {
+    // Store tray icon in state to keep it alive
+    let mut tray_icon = use_signal(|| None::<tray_icon::TrayIcon>);
+    
+    use_effect(move || {
+        // Initialize tray icon after Dioxus has started
+        // This avoids conflicts with macOS menu classes
+        match tray::init_tray_icon() {
+            Ok(icon) => {
+                tray_icon.set(Some(icon));
+            }
+            Err(e) => {
+                eprintln!("Failed to initialize tray icon: {}", e);
+            }
+        }
+    });
+
+    rsx! {
+        Greeting {}
+    }
 }
 
