@@ -2,10 +2,9 @@
 
 /// GUI Application Layer Entry Point
 /// 
-/// This is a Dioxus-based GUI application. The current implementation uses
-/// `tray-icon` and `tao` directly for the system tray functionality.
-/// Dioxus will be integrated for UI components (main window, components, etc.)
-/// in future tasks.
+/// This is a Dioxus-based GUI application with system tray support.
+/// The tray icon uses Dioxus Desktop's native trayicon module for seamless
+/// integration and cross-platform compatibility.
 
 mod tray;
 
@@ -19,24 +18,23 @@ use dioxus::prelude::*;
 use components::Greeting;
 
 fn main() {
-    // Launch Dioxus desktop application first
-    // The tray icon will be initialized after Dioxus starts to avoid conflicts
-    // with macOS menu classes that both Dioxus and tray-icon use
+    // Launch Dioxus desktop application
+    // The tray icon will be initialized in the App component after Dioxus starts
     dioxus::launch(App);
 }
 
 /// Main Dioxus application component
 #[allow(non_snake_case)]
 fn App() -> Element {
-    // Store tray icon in state to keep it alive
-    let mut tray_icon = use_signal(|| None::<tray_icon::TrayIcon>);
+    // Store tray manager in state to keep it alive
+    let mut tray_manager = use_signal(|| None::<tray::TrayManager>);
     
+    // Initialize tray icon after component mounts
     use_effect(move || {
-        // Initialize tray icon after Dioxus has started
-        // Note: On macOS, menu is skipped to avoid conflicts with Dioxus's menu system
-        match tray::init_tray_icon() {
-            Ok(icon) => {
-                tray_icon.set(Some(icon));
+        match tray::init_tray() {
+            Ok(manager) => {
+                tray_manager.set(Some(manager));
+                println!("Tray icon initialized successfully");
             }
             Err(e) => {
                 eprintln!("Failed to initialize tray icon: {}", e);
@@ -49,4 +47,3 @@ fn App() -> Element {
         Greeting {}
     }
 }
-

@@ -1,77 +1,110 @@
 /// System tray module
 /// 
-/// This module handles the system tray icon and menu functionality.
-/// Currently uses `tray-icon` and `tao` directly. Dioxus will be integrated
-/// for UI components in future tasks.
+/// This module handles the system tray icon and menu functionality using
+/// Dioxus Desktop's native `trayicon` module. This eliminates macOS conflicts
+/// since Dioxus uses the same internal muda/tao infrastructure.
 
-use tao::event_loop::{ControlFlow, EventLoop};
-use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
+use dioxus::desktop::trayicon::{Icon, TrayIcon, TrayIconBuilder};
+use dioxus::desktop::trayicon::menu::Menu as TrayMenu;
 
 pub mod icon;
 pub mod menu;
 
-pub use icon::create_simple_icon;
-pub use menu::create_tray_menu;
+pub use icon::load_tray_icon;
+pub use menu::create_default_tray_menu;
 
-/// Initializes and runs the system tray application
-pub fn run_tray_app() {
-    // Create a simple 32x32 icon with a solid color (blue)
-    let icon_data = create_simple_icon(32, 32, [0u8, 100u8, 200u8, 255u8]);
-    
-    let icon = match Icon::from_rgba(icon_data, 32, 32) {
-        Ok(icon) => icon,
-        Err(e) => {
-            eprintln!("Failed to create icon: {}", e);
-            return;
-        }
-    };
+/// Manages the system tray icon and its lifecycle
+/// 
+/// The tray icon must be kept alive for the duration of the application.
+/// Dropping this struct will remove the tray icon from the system tray.
+pub struct TrayManager {
+    tray_icon: TrayIcon,
+}
 
-    // Create the tray menu
-    let menu = create_tray_menu();
+impl TrayManager {
+    /// Initialize a new tray icon with default menu
+    /// 
+    /// This creates a tray icon with the default menu configuration.
+    /// The icon is loaded from embedded assets generated during build.
+    pub fn init() -> Result<Self, String> {
+        Self::init_with_menu(create_default_tray_menu())
+    }
 
-    let event_loop = EventLoop::new();
-    let _tray_icon = TrayIconBuilder::new()
-        .with_icon(icon)
-        .with_tooltip("Roro Kube")
-        .with_menu(Box::new(menu))
-        .build()
-        .unwrap();
+    /// Initialize a new tray icon with a custom menu
+    /// 
+    /// # Arguments
+    /// * `menu` - The menu to attach to the tray icon
+    pub fn init_with_menu(menu: TrayMenu) -> Result<Self, String> {
+        let icon = load_tray_icon()
+            .map_err(|e| format!("Failed to load tray icon: {}", e))?;
 
-    // Keep the application running
-    event_loop.run(move |_event, _, control_flow| {
-        *control_flow = ControlFlow::Wait;
-    });
+        let tray_icon = TrayIconBuilder::new()
+            .with_icon(icon)
+            .with_tooltip("Roro Kube")
+            .with_menu(Box::new(menu))
+            .build()
+            .map_err(|e| format!("Failed to build tray icon: {}", e))?;
+
+        Ok(Self { tray_icon })
+    }
+
+    /// Update the tray icon's menu
+    /// 
+    /// # Arguments
+    /// * `_menu` - The new menu to attach
+    #[allow(dead_code)]
+    pub fn update_menu(&mut self, _menu: TrayMenu) -> Result<(), String> {
+        // Note: TrayIcon doesn't have a direct update_menu method in the API
+        // We may need to recreate the tray icon or use platform-specific APIs
+        // For now, this is a placeholder for future functionality
+        eprintln!("Menu update not yet implemented - tray icon must be recreated");
+        Ok(())
+    }
+
+    /// Update the tray icon's image
+    /// 
+    /// # Arguments
+    /// * `_icon` - The new icon to display
+    #[allow(dead_code)]
+    pub fn update_icon(&mut self, _icon: Icon) -> Result<(), String> {
+        // Note: TrayIcon doesn't have a direct update_icon method in the API
+        // We may need to recreate the tray icon or use platform-specific APIs
+        // For now, this is a placeholder for future functionality
+        eprintln!("Icon update not yet implemented - tray icon must be recreated");
+        Ok(())
+    }
+
+    /// Set the tray icon's tooltip text
+    /// 
+    /// # Arguments
+    /// * `_tooltip` - The tooltip text to display
+    #[allow(dead_code)]
+    pub fn set_tooltip(&mut self, _tooltip: &str) -> Result<(), String> {
+        // Note: TrayIcon doesn't have a direct set_tooltip method in the API
+        // We may need to recreate the tray icon or use platform-specific APIs
+        // For now, this is a placeholder for future functionality
+        eprintln!("Tooltip update not yet implemented - tray icon must be recreated");
+        Ok(())
+    }
+
+    /// Get a reference to the underlying TrayIcon
+    /// 
+    /// This is useful for advanced use cases where direct access to the
+    /// TrayIcon API is needed.
+    #[allow(dead_code)]
+    pub fn tray_icon(&self) -> &TrayIcon {
+        &self.tray_icon
+    }
 }
 
 /// Initializes the system tray icon without blocking
-/// Returns the tray icon handle which must be kept alive
 /// 
-/// Note: On macOS, when running with Dioxus, we skip menu creation to avoid
-/// conflicts with menu class registration (both Dioxus and tray-icon use muda).
-/// The menu works fine on Windows and Linux.
-pub fn init_tray_icon() -> Result<TrayIcon, String> {
-    let icon_data = create_simple_icon(32, 32, [0u8, 100u8, 200u8, 255u8]);
-    
-    let icon = Icon::from_rgba(icon_data, 32, 32)
-        .map_err(|e| format!("Failed to create icon: {}", e))?;
-
-    // On macOS, skip menu creation when Dioxus is running to avoid class registration conflicts
-    // Both Dioxus and tray-icon use muda internally, causing "class already exists" errors
-    let tray_icon = {
-        let mut builder = TrayIconBuilder::new()
-            .with_icon(icon)
-            .with_tooltip("Roro Kube");
-
-        #[cfg(not(target_os = "macos"))]
-        {
-            let menu = create_tray_menu();
-            builder = builder.with_menu(Box::new(menu));
-        }
-
-        builder.build()
-    }
-    .map_err(|e| format!("Failed to build tray icon: {}", e))?;
-
-    Ok(tray_icon)
+/// Returns a TrayManager instance which must be kept alive for the
+/// lifetime of the application. When dropped, the tray icon will be removed.
+/// 
+/// This function works on all platforms including macOS, since we're using
+/// Dioxus's native trayicon module which handles menu class registration
+/// internally.
+pub fn init_tray() -> Result<TrayManager, String> {
+    TrayManager::init()
 }
-

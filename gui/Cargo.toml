@@ -11,8 +11,7 @@ path = "src/main.rs"
 [dependencies]
 roro_core = { path = "../core" }
 dioxus = { version = "0.7", features = ["desktop"] }
-tray-icon = "0.19"
-tao = "0.30"
+image = "0.24"
 
 [lints]
 workspace = true
