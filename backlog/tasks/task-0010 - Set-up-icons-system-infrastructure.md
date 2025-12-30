@@ -33,15 +33,5 @@ Set up the infrastructure for managing SVG icons used throughout the GUI applica
 - [ ] Directory structure matches the architecture specification
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

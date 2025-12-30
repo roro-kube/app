@@ -36,15 +36,5 @@ Initialize the Core layer crate that orchestrates between the Domain and Persist
 - [ ] Error types use `thiserror` and can transform errors from domain and persistence layers
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

@@ -34,15 +34,5 @@ Create a reusable icon component in the GUI crate that allows Rust code to easil
 - [ ] At least one icon can be successfully rendered in a test component
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

@@ -36,15 +36,5 @@ Set up the complete GUI asset directory structure and integrate the build proces
 - [ ] Development workflow supports watch mode for assets (optional but recommended)
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

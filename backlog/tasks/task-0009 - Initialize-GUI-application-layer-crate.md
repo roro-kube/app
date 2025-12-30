@@ -45,15 +45,5 @@ The GUI layer will eventually include additional UI components such as a main wi
 - [ ] Windows subsystem attribute is set to hide console window (`#![cfg_attr(windows, windows_subsystem = "windows")]`)
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

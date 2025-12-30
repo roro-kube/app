@@ -31,15 +31,5 @@ Establish a Cargo workspace structure that will house all the architectural laye
 - [ ] Workspace structure follows the layered architecture pattern from architecture.md
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 

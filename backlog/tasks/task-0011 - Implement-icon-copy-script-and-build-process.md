@@ -33,15 +33,5 @@ Implement the icon copy script and build process that copies icons from the icon
 - [ ] At least one test icon is successfully copied and accessible in GUI assets directory
 <!-- AC:END -->
 
-## Implementation Plan
 
-<!-- SECTION:PLAN:BEGIN -->
-(Added only after status changes to "In Progress")
-<!-- SECTION:PLAN:END -->
-
-## Implementation Notes
-
-<!-- SECTION:NOTES:BEGIN -->
-(Added only after implementation is complete)
-<!-- SECTION:NOTES:END -->
 
