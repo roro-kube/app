@@ -1,4 +1,4 @@
-# Start Task Work
+# Plan Task Work
 
 Begin implementation of a backlog task by creating a comprehensive implementation plan. This command handles task planning, breakdown, and status updates.
 
