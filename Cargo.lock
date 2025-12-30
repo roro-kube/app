@@ -513,6 +513,7 @@ version = "0.1.0"
 dependencies = [
  "domain",
  "persistence",
+ "thiserror 1.0.69",
 ]
 
 [[package]]

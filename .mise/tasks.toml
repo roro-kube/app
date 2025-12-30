@@ -10,6 +10,18 @@ run = "cargo build -p persistence"
 description = "Build the domain crate"
 run = "cargo build -p domain"
 
+[build-core]
+description = "Build the core crate"
+run = "cargo build -p core"
+
+[build-gui]
+description = "Build the GUI crate"
+run = "cargo build -p gui"
+
+[run-gui]
+description = "Run the GUI crate"
+run = "cargo run -p gui"
+
 [backlog-server]
 description = "Start the backlog.md browser interface server"
 run = "mise exec -- backlog browser"
