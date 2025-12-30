@@ -1,3 +1,11 @@
+---
+id: doc-0004
+title: Talking Points
+type: overview
+created_date: '2025-12-30 21:01'
+updated_date: '2025-12-30 21:01'
+---
+
 # Roro Kube - High Level Talking Points
 
 ## Core Concept
@@ -132,3 +140,7 @@ This fills a legitimate gap between:
 - Cluster operators (Argo/Flux) - too opinionated for local dev
 - Cluster viewers (Lens/K9s) - no app concept or lifecycle management
 
+## References
+
+- Source: `overview/talking-points.md`
+- Related: doc-0002 (Features), decision-0010 (Local-First Philosophy)

@@ -1,10 +1,16 @@
+---
+id: doc-0002
+title: Features
+type: technical
+created_date: '2025-12-30 21:01'
+updated_date: '2025-12-30 21:01'
+---
+
 # Roro Kube - Feature Set
 
 ## Overview
 
 Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop application that manages Kubernetes applications with the simplicity of Docker Compose. This document outlines the complete feature set.
-
----
 
 ## Core Features
 
@@ -28,8 +34,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Restart apps with updated configurations
 - Delete apps and clean up resources
 - View app status and health
-
----
 
 ### 2. Git-Backed Configuration
 
@@ -59,8 +63,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Environment-specific configuration files
 - Manifest templates stored relative to app directory
 
----
-
 ### 3. System Tray Interface
 
 **Native Desktop Integration**
@@ -87,8 +89,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Connection status to cluster
 - Port-forward active indicators
 
----
-
 ### 4. Port Forwarding Management
 
 **Automatic Port Forwarding**
@@ -113,8 +113,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Auto-open browser URLs for forwarded ports
 - Configurable browser URLs per port
 - Quick access to forwarded services
-
----
 
 ### 5. CRD-Based Environment Variables
 
@@ -141,8 +139,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Error handling for missing/invalid CRDs
 - Support for multiple CRD sources per app
 
----
-
 ### 6. Multi-Instance Deployments
 
 **Instance Management**
@@ -168,8 +164,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Environment-specific configurations
 - Environment switching in UI
 - Environment-specific CRD values
-
----
 
 ### 7. Template Rendering
 
@@ -199,8 +193,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Namespace templating
 - Instance-specific templating
 
----
-
 ### 8. State Management & Reconciliation
 
 **State Layers**
@@ -226,8 +218,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - No background reconciliation
 - No automatic updates
 - User owns the lifecycle
-
----
 
 ### 9. Kubernetes Integration
 
@@ -256,8 +246,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Health status reporting
 - Automatic restart on health check failure (optional)
 
----
-
 ### 10. Dependency Management
 
 **App Dependencies**
@@ -270,8 +258,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Deploy dependencies before dependents
 - Dependency status tracking
 - Handle dependency failures gracefully
-
----
 
 ### 11. User Interface Features
 
@@ -304,8 +290,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Log viewer in UI
 - Error tracking and reporting
 
----
-
 ### 12. Advanced Features
 
 **Workspace Management**
@@ -333,8 +317,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - Git sync failure handling
 - Graceful degradation
 
----
-
 ## Architecture Principles
 
 ### Local-First
@@ -361,8 +343,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - **Kubernetes Layer**: Actual cluster state
 - **UI Layer**: Dioxus tray + full window interface
 
----
-
 ## Technology Stack
 
 - **UI Framework**: Dioxus (Rust-based, cross-platform)
@@ -373,8 +353,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - **JSON Processing**: serde, serde_json
 - **JSONPath**: jsonpath crate for CRD value extraction
 - **Async Runtime**: Tokio
-
----
 
 ## Key Differentiators
 
@@ -388,8 +366,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 8. **Local-First Philosophy** - User owns the lifecycle
 9. **Workspace-Based** - Similar to Cargo workspaces
 10. **Template-Agnostic** - Support multiple template engines
-
----
 
 ## Use Cases
 
@@ -418,8 +394,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
   - Environment-specific configurations
   - CRD-based environment variable injection
 
----
-
 ## Feature Comparison
 
 | Feature | Roro Kube | Docker Compose | Tilt/Skaffold | Argo CD/Flux | Lens/K9s |
@@ -440,8 +414,6 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 - ⚠️ Partial support or different approach
 - ❌ Not supported
 
----
-
 ## Future Considerations
 
 Potential future features (not in initial scope):
@@ -454,3 +426,7 @@ Potential future features (not in initial scope):
 - Resource quota management
 - Multi-cluster support
 
+## References
+
+- Source: `overview/features.md`
+- Related: decision-0016 (App-Centric Model), decision-0017 (Port Forwarding as First-Class Feature), decision-0010 (Local-First Philosophy)
