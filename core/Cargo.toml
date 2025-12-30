@@ -1,0 +1,17 @@
+[package]
+name = "core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[lib]
+name = "core"
+path = "src/lib.rs"
+
+[dependencies]
+persistence = { path = "../persistence" }
+domain = { path = "../domain" }
+
+[lints]
+workspace = true
+

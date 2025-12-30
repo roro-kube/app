@@ -1,14 +1,16 @@
 ---
 id: task-0005
 title: Initialize Cargo workspace with layer crates
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-29 22:14'
+updated_date: '2025-12-30 13:11'
 labels:
   - bootstrap
   - architecture
 dependencies: []
 priority: high
+ordinal: 1000
 ---
 
 ## Description
@@ -18,18 +20,14 @@ Establish a Cargo workspace structure that will house all the architectural laye
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
 <!-- AC:BEGIN -->
-- [ ] Root `Cargo.toml` exists with `[workspace]` section defining all member crates
-- [ ] Workspace members include: `persistence`, `domain`, `core`, `gui`
-- [ ] Workspace defines shared dependencies (serde, tokio, thiserror, etc.) in `[workspace.dependencies]`
-- [ ] Workspace defines shared package metadata (version, edition, authors) in `[workspace.package]`
-- [ ] Workspace defines shared linting rules in `[workspace.lints]`
-- [ ] Each member crate directory exists (even if empty initially)
-- [ ] Mise task exists for building workspace (e.g., `mise run build-workspace` executes `cargo build --workspace`)
-- [ ] Workspace builds successfully via mise task
-- [ ] Workspace structure follows the layered architecture pattern from architecture.md
+- [ ] #1 Root `Cargo.toml` exists with `[workspace]` section defining all member crates
+- [ ] #2 Workspace members include: `persistence`, `domain`, `core`, `gui`
+- [ ] #3 Workspace defines shared dependencies (serde, tokio, thiserror, etc.) in `[workspace.dependencies]`
+- [ ] #4 Workspace defines shared package metadata (version, edition, authors) in `[workspace.package]`
+- [ ] #5 Workspace defines shared linting rules in `[workspace.lints]`
+- [ ] #6 Each member crate directory exists (even if empty initially)
+- [ ] #7 Mise task exists for building workspace (e.g., `mise run build-workspace` executes `cargo build --workspace`)
+- [ ] #8 Workspace builds successfully via mise task
+- [ ] #9 Workspace structure follows the layered architecture pattern from architecture.md
 <!-- AC:END -->
-
-
-

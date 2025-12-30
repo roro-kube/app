@@ -1,0 +1,19 @@
+[package]
+name = "gui"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "roro-kube"
+path = "src/main.rs"
+
+[dependencies]
+core = { path = "../core" }
+dioxus = { version = "0.6", features = ["desktop"] }
+tray-icon = "0.19"
+tao = "0.30"
+
+[lints]
+workspace = true
+
