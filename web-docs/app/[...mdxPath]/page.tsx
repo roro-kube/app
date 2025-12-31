@@ -3,7 +3,10 @@ import { useMDXComponents as getMDXComponents } from "../../mdx-components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const generateStaticParams = generateStaticParamsFor("mdxPath");
+export async function generateStaticParams() {
+  const params = await generateStaticParamsFor("mdxPath");
+  return params;
+}
 
 export async function generateMetadata(props: {
   params: Promise<{ mdxPath: string[] }>;
