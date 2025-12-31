@@ -7,6 +7,7 @@ on:
     branches: ["main"]
     paths:
       - 'backlog/docs/**'
+      - 'backlog/decisions/**'
       - 'web-docs/**'
       - 'tailwind/**'
       - 'icons/**'
@@ -42,14 +43,19 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install mise
-        uses: jdx/mise-action@v2
+      - name: Install Icons dependencies
+        run: cd icons && npm install
 
       - name: Build Icons
-        run: mise run icons-build
+        run: |
+          cd icons && node scripts/build.mjs
+          cd icons && node scripts/copy-icons.js
+
+      - name: Install Tailwind dependencies
+        run: cd tailwind && npm install
 
       - name: Build Tailwind
-        run: mise run tailwind-build
+        run: cd tailwind && npm run build
 
       - name: Copy Assets
         run: |
