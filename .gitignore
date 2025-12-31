@@ -33,7 +33,6 @@ web-docs/src/lib/docPages.js
 web-docs/public/
 web-docs/*.html
 web-docs/**/*.html
-!web-docs/index.html
 web-docs/html-entries.json
 
 # macOS system files
