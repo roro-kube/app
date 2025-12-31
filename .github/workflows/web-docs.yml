@@ -50,7 +50,6 @@ jobs:
         run: |
           cd icons
           node scripts/build.mjs
-          node scripts/copy-icons.js
 
       - name: Install Tailwind dependencies
         run: cd tailwind && npm install
