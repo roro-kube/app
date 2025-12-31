@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
-  const params = await generateStaticParamsFor("mdxPath");
-  return params;
+  const generateParams = generateStaticParamsFor("mdxPath");
+  return await generateParams();
 }
 
 export async function generateMetadata(props: {
