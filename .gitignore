@@ -34,6 +34,17 @@ web-docs/public/pages.json
 web-docs/public/css/
 web-docs/public/branding/
 web-docs/public/icons/
+web-docs/public/tailwind.js
+web-docs/public/tailwind.css
+web-docs/_pagefind/
+web-docs/.env
+web-docs/.env.local
+web-docs/.env.development.local
+web-docs/.env.test.local
+web-docs/.env.production.local
+web-docs/npm-debug.log*
+web-docs/yarn-debug.log*
+web-docs/yarn-error.log*
 
 # macOS system files
 .DS_Store
