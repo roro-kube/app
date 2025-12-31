@@ -149,6 +149,7 @@ async function generatePageFile(fileInfo) {
     path: fileInfo.relativePath,
     title: frontMatter.title,
     type: frontMatter.type,
+    id: frontMatter.id,
     filePath: pageFilePath,
   };
 }
@@ -173,6 +174,7 @@ async function generateDocPagesFile(pages) {
     path: '${page.path}',
     title: ${JSON.stringify(page.title)},
     type: ${JSON.stringify(page.type)},
+    id: ${JSON.stringify(page.id)},
     component: Page${index}
   }`;
     })
@@ -208,8 +210,15 @@ async function main() {
       console.log(`✓ Generated: ${page.path}.jsx`);
     }
 
+    // Sort pages by doc number (extract number from id like "doc-0001")
+    pages.sort((a, b) => {
+      const numA = parseInt(a.id?.match(/\d+/)?.[0] || "0", 10);
+      const numB = parseInt(b.id?.match(/\d+/)?.[0] || "0", 10);
+      return numA - numB;
+    });
+
     await generateDocPagesFile(pages);
-    console.log(`\n✓ Generated docPages.js with ${pages.length} pages`);
+    console.log(`\n✓ Generated docPages.js with ${pages.length} pages (sorted by doc number)`);
     console.log("\n✅ Page generation complete!");
   } catch (error) {
     console.error("\n❌ Error:", error.message);

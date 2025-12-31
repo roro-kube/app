@@ -14,7 +14,15 @@ function Sidebar() {
         </Link>
         {docPages.length > 0 ? (
           <nav className="space-y-1">
-            {docPages.map((page) => (
+            {docPages
+              .slice()
+              .sort((a, b) => {
+                // Extract doc number from id (e.g., "doc-0001" -> 1)
+                const numA = parseInt(a.id?.match(/\d+/)?.[0] || "0", 10);
+                const numB = parseInt(b.id?.match(/\d+/)?.[0] || "0", 10);
+                return numA - numB;
+              })
+              .map((page) => (
               <Link
                 key={page.route}
                 to={page.route}
