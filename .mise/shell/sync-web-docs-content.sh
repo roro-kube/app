@@ -7,14 +7,17 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 WEB_DOCS_DIR="$PROJECT_ROOT/web-docs"
 BACKLOG_DOCS_DIR="$PROJECT_ROOT/backlog/docs"
 BACKLOG_DECISIONS_DIR="$PROJECT_ROOT/backlog/decisions"
+CONTENT_ROOT_DIR="$WEB_DOCS_DIR/content"
 CONTENT_DOCS_DIR="$WEB_DOCS_DIR/content/docs"
 CONTENT_DECISIONS_DIR="$WEB_DOCS_DIR/content/decisions"
 GUI_ASSETS_DIR="$PROJECT_ROOT/gui/assets"
 PUBLIC_DIR="$WEB_DOCS_DIR/public"
+HOME_MDX_SOURCE="$WEB_DOCS_DIR/home.mdx"
 
 echo "📄 Syncing markdown content to web-docs..."
 
 # Create content directories if they don't exist
+mkdir -p "$CONTENT_ROOT_DIR"
 mkdir -p "$CONTENT_DOCS_DIR"
 mkdir -p "$CONTENT_DECISIONS_DIR"
 
@@ -71,6 +74,15 @@ copy_assets_preserve_structure() {
   echo "✅ Copied $file_count asset files from $source_dir to $dest_dir (structure preserved)"
   return 0
 }
+
+# Copy home.mdx to content root as index.mdx
+echo "🏠 Copying home.mdx to content root as index.mdx..."
+if [ -f "$HOME_MDX_SOURCE" ]; then
+  cp "$HOME_MDX_SOURCE" "$CONTENT_ROOT_DIR/index.mdx"
+  echo "✅ Copied home.mdx to $CONTENT_ROOT_DIR/index.mdx"
+else
+  echo "⚠️  home.mdx not found at $HOME_MDX_SOURCE"
+fi
 
 # Copy docs (flattened)
 echo "📚 Copying docs from backlog/docs..."
