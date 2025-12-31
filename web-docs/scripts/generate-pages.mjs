@@ -250,10 +250,9 @@ async function generateHtmlEntries(pages) {
   const entries = [];
   
   // Generate homepage
-  // For script path, use base path if set, otherwise absolute path
-  const scriptPath = basePath !== '/' 
-    ? basePath + 'src/pages/index.jsx'
-    : '/src/pages/index.jsx';
+  // Script paths should NOT include base path - Vite will add it during build
+  // Asset paths should include base path for final HTML output
+  const scriptPath = '/src/pages/index.jsx';
   
   const homepageHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -285,22 +284,17 @@ async function generateHtmlEntries(pages) {
     
     await fs.mkdir(htmlDirPath, { recursive: true });
     
-    // Calculate paths based on base path
-    // If basePath is /app/, we need to use absolute paths with base path
-    // If basePath is /, we can use relative paths
+    // Calculate paths
+    // Script paths should NOT include base path - Vite will add it during build
+    // Asset paths should include base path for final HTML output
     const htmlDepth = htmlPath.split('/').length - 1;
     const relativeBase = '../'.repeat(htmlDepth);
     
-    let scriptPath, assetPath;
-    if (basePath !== '/') {
-      // Use absolute paths with base path
-      scriptPath = basePath + 'src/pages/' + page.path.replace(/\\/g, '/') + '.jsx';
-      assetPath = basePath;
-    } else {
-      // Use relative paths
-      scriptPath = relativeBase + 'src/pages/' + page.path.replace(/\\/g, '/') + '.jsx';
-      assetPath = relativeBase;
-    }
+    // Script path: use relative path (Vite will handle base path during build)
+    const scriptPath = relativeBase + 'src/pages/' + page.path.replace(/\\/g, '/') + '.jsx';
+    
+    // Asset path: use base path for final output
+    const assetPath = basePath;
     
     const pageHtml = `<!DOCTYPE html>
 <html lang="en">
