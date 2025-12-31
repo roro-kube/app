@@ -1,27 +1,26 @@
 {
   "name": "roro-kube-web-docs",
   "version": "0.1.0",
-  "description": "Documentation site for Roro Kube",
-  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,mdx,json}\"",
+    "postbuild": "pagefind --site .next/server/app --output-path out/_pagefind"
+  },
   "dependencies": {
-    "@mdx-js/react": "^3.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "next": "16.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "nextra": "4.6.1",
+    "nextra-theme-docs": "4.6.1"
   },
   "devDependencies": {
-    "@mdx-js/rollup": "^3.0.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "gray-matter": "^4.0.3",
-    "prettier": "^3.1.0",
-    "remark-frontmatter": "^5.0.0",
-    "vite": "^5.0.8"
-  },
-  "scripts": {
-    "generate": "node scripts/generate-pages.mjs",
-    "build": "npm run generate && vite build",
-    "dev": "npm run generate && vite dev",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,mjs}\" \"scripts/**/*.{js,mjs}\"",
-    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,mjs}\" \"scripts/**/*.{js,mjs}\""
+    "@types/node": "25.0.3",
+    "@types/react": "19.2.7",
+    "pagefind": "1.4.0",
+    "prettier": "3.7.4",
+    "typescript": "5.9.3"
   }
 }
-

@@ -1,0 +1,25 @@
+[web-docs-install]
+description = "Install npm dependencies for web-docs"
+run = "cd web-docs && npm install"
+
+[web-docs-format]
+description = "Format code in web-docs"
+run = "cd web-docs && npm run format 2>/dev/null || echo 'No format script found'"
+
+[web-docs-sync-content]
+description = "Sync markdown content from backlog/docs and backlog/decisions"
+run = "bash .mise/shell/sync-web-docs-content.sh"
+
+[web-docs-build]
+description = "Build the docs site"
+depends = ["web-docs-sync-content"]
+run = "cd web-docs && npm run build"
+
+[web-docs-clean]
+description = "Clean all generated web-docs files"
+run = "cd web-docs && rm -rf .next out _pagefind node_modules 2>/dev/null || true"
+
+[web-docs-dev]
+description = "Run Next.js dev server locally"
+depends = ["web-docs-install", "web-docs-sync-content"]
+run = "cd web-docs && npm run dev"

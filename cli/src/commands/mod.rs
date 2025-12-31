@@ -20,3 +20,4 @@ pub trait Command: Send + Sync {
     /// * `Err(String)` if the command failed (error message for user)
     async fn execute(&self) -> Result<(), String>;
 }
+

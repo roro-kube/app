@@ -16,4 +16,4 @@ bin = "backlog"  # Rename backlog-bun to backlog
 # NODE_ENV = "development"
 
 [task_config]
-includes = [".mise/build.toml", ".mise/run.toml", ".mise/assets.toml", ".mise/quality.toml", ".mise/dev.toml"]
+includes = [".mise/build.toml", ".mise/run.toml", ".mise/assets.toml", ".mise/quality.toml", ".mise/dev.toml", ".mise/web-docs.toml"]

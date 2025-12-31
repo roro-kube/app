@@ -26,14 +26,14 @@ icons/dist/
 # Generated GUI assets (tailwind CSS, icons, branding)
 gui/assets/
 
-# Web-docs generated files
-web-docs/dist/
-web-docs/src/pages/
-web-docs/src/lib/docPages.js
-web-docs/public/
-web-docs/*.html
-web-docs/**/*.html
-web-docs/html-entries.json
+# Web-docs generated files (Next.js)
+web-docs/.next/
+web-docs/out/
+web-docs/content/
+web-docs/public/pages.json
+web-docs/public/css/
+web-docs/public/branding/
+web-docs/public/icons/
 
 # macOS system files
 .DS_Store
