@@ -17,7 +17,7 @@ run = "cd web-docs && npm run build"
 
 [web-docs-clean]
 description = "Clean all generated web-docs files"
-run = "cd web-docs && rm -rf .next out _pagefind node_modules 2>/dev/null || true"
+run = "cd web-docs && rm -rf .next out content _pagefind node_modules 2>/dev/null || true"
 
 [web-docs-dev]
 description = "Run Next.js dev server locally"
