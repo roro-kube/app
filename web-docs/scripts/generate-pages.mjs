@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const rootDir = path.join(__dirname, "..");
 const docsDir = path.join(rootDir, "..", "backlog", "docs");
+const decisionsDir = path.join(rootDir, "..", "backlog", "decisions");
 const pagesDir = path.join(rootDir, "src", "pages");
 
 // Clean and create pages directory
@@ -45,7 +46,7 @@ async function findMarkdownFiles(dir, basePath = "") {
 }
 
 // Generate page component from markdown file
-function generatePageComponent(fileInfo, frontMatter) {
+function generatePageComponent(fileInfo, frontMatter, importPath) {
   // Calculate relative path to DocsLayout
   const depth = fileInfo.relativePath.split(path.sep).length;
   const layoutPath = "../".repeat(depth) + "layouts/DocsLayout";
@@ -58,7 +59,7 @@ function generatePageComponent(fileInfo, frontMatter) {
 
   return `import React from 'react'
 import DocsLayout from '${layoutPath}'
-import DocContent from '@docs/${fileInfo.relativePath.replace(/\\/g, "/")}.md?mdx'
+import DocContent from '${importPath}'
 import { MDXWrapper } from '${componentsPath}'
 
 export default function Page() {
@@ -104,7 +105,7 @@ export const frontMatter = ${JSON.stringify(frontMatter, null, 2)}
 }
 
 // Generate page file
-async function generatePageFile(fileInfo) {
+async function generatePageFile(fileInfo, category = "docs") {
   let data;
   try {
     const fileContent = await fs.readFile(fileInfo.fullPath, "utf-8");
@@ -116,21 +117,28 @@ async function generatePageFile(fileInfo) {
   }
 
   // Extract title from filename if not in front-matter
+  // Remove decision-XXXX - or doc-XXXX - prefix
   const defaultTitle = fileInfo.fileName
-    .replace(/^doc-\d+\s*-\s*/, "") // Remove doc-XXXX - prefix if present
+    .replace(/^(decision|doc)-\d+\s*-\s*/, "")
     .replace(/\.md$/, "")
     .trim();
 
   const frontMatter = {
     id: data.id || "",
     title: data.title || defaultTitle,
-    type: data.type || "general",
-    created_date: data.created_date || "",
+    type: data.type || category,
+    created_date: data.created_date || data.date || "",
     updated_date: data.updated_date || "",
     path: fileInfo.relativePath,
+    category: category,
   };
 
-  const pageContent = generatePageComponent(fileInfo, frontMatter);
+  // For decisions, update the import path to use decisions folder
+  const importPath = category === "decisions" 
+    ? `@decisions/${fileInfo.fileName.replace(/\.md$/, "")}.md?mdx`
+    : `@docs/${fileInfo.relativePath.replace(/\\/g, "/")}.md?mdx`;
+
+  const pageContent = generatePageComponent(fileInfo, frontMatter, importPath);
 
   // Create directory structure
   const pageDir = path.join(pagesDir, path.dirname(fileInfo.relativePath));
@@ -150,6 +158,7 @@ async function generatePageFile(fileInfo) {
     title: frontMatter.title,
     type: frontMatter.type,
     id: frontMatter.id,
+    category: category,
     filePath: pageFilePath,
   };
 }
@@ -175,6 +184,7 @@ async function generateDocPagesFile(pages) {
     title: ${JSON.stringify(page.title)},
     type: ${JSON.stringify(page.type)},
     id: ${JSON.stringify(page.id)},
+    category: ${JSON.stringify(page.category || "docs")},
     component: Page${index}
   }`;
     })
@@ -196,21 +206,35 @@ ${routes}
 
 async function main() {
   try {
-    console.log("🚀 Generating pages from backlog/docs...\n");
+    console.log("🚀 Generating pages from backlog/docs and backlog/decisions...\n");
 
     await setupPagesDir();
 
-    const markdownFiles = await findMarkdownFiles(docsDir);
-    console.log(`Found ${markdownFiles.length} markdown files\n`);
+    // Find docs
+    const docsFiles = await findMarkdownFiles(docsDir);
+    console.log(`Found ${docsFiles.length} documentation files\n`);
+
+    // Find decisions
+    const decisionsFiles = await findMarkdownFiles(decisionsDir, "decisions");
+    console.log(`Found ${decisionsFiles.length} decision files\n`);
 
     const pages = [];
-    for (const fileInfo of markdownFiles) {
-      const page = await generatePageFile(fileInfo);
+    
+    // Generate doc pages
+    for (const fileInfo of docsFiles) {
+      const page = await generatePageFile(fileInfo, "docs");
       pages.push(page);
       console.log(`✓ Generated: ${page.path}.jsx`);
     }
 
-    // Sort pages by doc number (extract number from id like "doc-0001")
+    // Generate decision pages
+    for (const fileInfo of decisionsFiles) {
+      const page = await generatePageFile(fileInfo, "decisions");
+      pages.push(page);
+      console.log(`✓ Generated: ${page.path}.jsx`);
+    }
+
+    // Sort pages by doc/decision number (extract number from id like "doc-0001" or "decision-0001")
     pages.sort((a, b) => {
       const numA = parseInt(a.id?.match(/\d+/)?.[0] || "0", 10);
       const numB = parseInt(b.id?.match(/\d+/)?.[0] || "0", 10);
@@ -218,7 +242,7 @@ async function main() {
     });
 
     await generateDocPagesFile(pages);
-    console.log(`\n✓ Generated docPages.js with ${pages.length} pages (sorted by doc number)`);
+    console.log(`\n✓ Generated docPages.js with ${pages.length} pages (sorted by number)`);
     console.log("\n✅ Page generation complete!");
   } catch (error) {
     console.error("\n❌ Error:", error.message);

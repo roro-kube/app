@@ -20,7 +20,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@docs': path.resolve(__dirname, '../backlog/docs')
+      '@docs': path.resolve(__dirname, '../backlog/docs'),
+      '@decisions': path.resolve(__dirname, '../backlog/decisions')
     }
   },
   build: {
