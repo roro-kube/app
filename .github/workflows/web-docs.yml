@@ -58,10 +58,10 @@ jobs:
       - name: Build Tailwind
         run: cd tailwind && npm run build
 
-      - name: Copy Assets
+      - name: Sync web-docs content
         run: |
-          mkdir -p web-docs/public
-          cp -r gui/assets/* web-docs/public/
+          chmod +x .mise/shell/sync-web-docs-content.sh
+          .mise/shell/sync-web-docs-content.sh
 
       - name: Install web-docs dependencies
         run: cd web-docs && npm install
