@@ -1,32 +1,18 @@
 import { generateStaticParamsFor, importPage } from "nextra/pages";
 import { useMDXComponents as getMDXComponents } from "../../mdx-components";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 export const generateStaticParams = generateStaticParamsFor("mdxPath");
 
-export async function generateMetadata(props: {
-  params: Promise<{ mdxPath: string[] }>;
-}): Promise<Metadata> {
+export async function generateMetadata(props: any) {
   const params = await props.params;
-  // Exclude .well-known paths (e.g., Chrome DevTools requests)
-  if (params.mdxPath[0] === ".well-known") {
-    notFound();
-  }
   const { metadata } = await importPage(params.mdxPath);
   return metadata;
 }
 
 const Wrapper = getMDXComponents().wrapper;
 
-export default async function Page(props: {
-  params: Promise<{ mdxPath: string[] }>;
-}) {
+export default async function Page(props: any) {
   const params = await props.params;
-  // Exclude .well-known paths (e.g., Chrome DevTools requests)
-  if (params.mdxPath[0] === ".well-known") {
-    notFound();
-  }
   const {
     default: MDXContent,
     toc,
