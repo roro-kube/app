@@ -46,7 +46,7 @@ async function findMarkdownFiles(dir, basePath = "") {
 }
 
 // Generate page component from markdown file
-function generatePageComponent(fileInfo, frontMatter, importPath) {
+function generatePageComponent(fileInfo, frontMatter, importPath, route) {
   // Calculate relative path to DocsLayout
   const depth = fileInfo.relativePath.split(path.sep).length;
   const layoutPath = "../".repeat(depth) + "layouts/DocsLayout";
@@ -58,13 +58,14 @@ function generatePageComponent(fileInfo, frontMatter, importPath) {
   const createdDate = frontMatter.created_date || ''
 
   return `import React from 'react'
+import ReactDOM from 'react-dom/client'
 import DocsLayout from '${layoutPath}'
 import DocContent from '${importPath}'
 import { MDXWrapper } from '${componentsPath}'
 
-export default function Page() {
+function Page() {
   return (
-    <DocsLayout>
+    <DocsLayout currentPath="${route}">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
         <header className="mb-6 pb-6 border-b border-gray-200">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">${title}</h1>
@@ -99,6 +100,16 @@ ${createdDate ? `            <span className="inline-flex items-center px-3 py-1
     </DocsLayout>
   )
 }
+
+// Auto-render on load
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Page />
+  </React.StrictMode>
+)
+
+// Export for docPages.js
+export default Page
 
 export const frontMatter = ${JSON.stringify(frontMatter, null, 2)}
 `;
@@ -138,7 +149,10 @@ async function generatePageFile(fileInfo, category = "docs") {
     ? `@decisions/${fileInfo.fileName.replace(/\.md$/, "")}.md?mdx`
     : `@docs/${fileInfo.relativePath.replace(/\\/g, "/")}.md?mdx`;
 
-  const pageContent = generatePageComponent(fileInfo, frontMatter, importPath);
+  // Generate route from relative path (preserve folder structure)
+  const route = "/" + fileInfo.relativePath.replace(/\\/g, "/");
+  
+  const pageContent = generatePageComponent(fileInfo, frontMatter, importPath, route);
 
   // Create directory structure
   const pageDir = path.join(pagesDir, path.dirname(fileInfo.relativePath));
@@ -149,9 +163,6 @@ async function generatePageFile(fileInfo, category = "docs") {
   const pageFilePath = path.join(pageDir, pageFileName);
   await fs.writeFile(pageFilePath, pageContent, "utf-8");
 
-  // Generate route from relative path (preserve folder structure)
-  const route = "/" + fileInfo.relativePath.replace(/\\/g, "/");
-
   return {
     route,
     path: fileInfo.relativePath,
@@ -161,6 +172,164 @@ async function generatePageFile(fileInfo, category = "docs") {
     category: category,
     filePath: pageFilePath,
   };
+}
+
+// Generate index page component
+async function generateIndexPage() {
+  const indexPageContent = `import React from 'react'
+import ReactDOM from 'react-dom/client'
+import DocsLayout from '../layouts/DocsLayout'
+import { docPages } from '../lib/docPages'
+
+function HomePage() {
+  const basePath = import.meta.env.BASE_URL || '/'
+  
+  const getHref = (route) => {
+    if (basePath === '/') return route;
+    return basePath + route.replace(/^\\//, '');
+  };
+  
+  return (
+    <DocsLayout currentPath="/">
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <h1 className="text-4xl font-bold mb-6">Roro Kube Documentation</h1>
+        <p className="text-lg text-gray-600 mb-8">
+          Welcome to the Roro Kube documentation. Navigate using the sidebar to
+          explore different topics.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {docPages.length > 0 ? (
+            docPages.map((page) => (
+              <a
+                key={page.route}
+                href={getHref(page.route)}
+                className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition"
+              >
+                <h2 className="text-xl font-semibold mb-2">{page.title}</h2>
+                <p className="text-sm text-gray-500 capitalize">{page.type}</p>
+              </a>
+            ))
+          ) : (
+            <p className="text-gray-500">
+              No pages found. Run{" "}
+              <code className="bg-gray-100 px-2 py-1 rounded">
+                npm run generate
+              </code>{" "}
+              to generate pages.
+            </p>
+          )}
+        </div>
+      </div>
+    </DocsLayout>
+  )
+}
+
+// Auto-render on load
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <HomePage />
+  </React.StrictMode>
+)
+
+// Export for docPages.js
+export default HomePage
+`;
+
+  await fs.writeFile(
+    path.join(pagesDir, 'index.jsx'),
+    indexPageContent,
+    'utf-8'
+  );
+  console.log('✓ Generated: index.jsx');
+}
+
+// Generate HTML entry points for each page
+async function generateHtmlEntries(pages) {
+  const basePath = process.env.BASE_PATH || '/';
+  const htmlDir = rootDir;
+  const entries = [];
+  
+  // Generate homepage
+  // For script path, use base path if set, otherwise absolute path
+  const scriptPath = basePath !== '/' 
+    ? basePath + 'src/pages/index.jsx'
+    : '/src/pages/index.jsx';
+  
+  const homepageHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="${basePath}branding/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="${basePath}tailwind.css" />
+    <title>Roro Kube Documentation</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="${scriptPath}"></script>
+  </body>
+</html>`;
+  
+  await fs.writeFile(path.join(htmlDir, 'index.html'), homepageHtml, 'utf-8');
+  entries.push({ name: 'index', path: 'index.html' });
+  
+  // Generate HTML files for each page
+  for (const page of pages) {
+    if (page.route === '/') continue; // Skip homepage, already generated
+    
+    const htmlPath = page.route.startsWith('/') 
+      ? page.route.slice(1) + '.html' 
+      : page.route + '.html';
+    const fullHtmlPath = path.join(htmlDir, htmlPath);
+    const htmlDirPath = path.dirname(fullHtmlPath);
+    
+    await fs.mkdir(htmlDirPath, { recursive: true });
+    
+    // Calculate paths based on base path
+    // If basePath is /app/, we need to use absolute paths with base path
+    // If basePath is /, we can use relative paths
+    const htmlDepth = htmlPath.split('/').length - 1;
+    const relativeBase = '../'.repeat(htmlDepth);
+    
+    let scriptPath, assetPath;
+    if (basePath !== '/') {
+      // Use absolute paths with base path
+      scriptPath = basePath + 'src/pages/' + page.path.replace(/\\/g, '/') + '.jsx';
+      assetPath = basePath;
+    } else {
+      // Use relative paths
+      scriptPath = relativeBase + 'src/pages/' + page.path.replace(/\\/g, '/') + '.jsx';
+      assetPath = relativeBase;
+    }
+    
+    const pageHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="${assetPath}branding/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="${assetPath}tailwind.css" />
+    <title>${page.title} - Roro Kube Documentation</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="${scriptPath}"></script>
+  </body>
+</html>`;
+    
+    await fs.writeFile(fullHtmlPath, pageHtml, 'utf-8');
+    
+    // Generate entry name from route (sanitize for Vite)
+    const entryName = htmlPath.replace(/\.html$/, '').replace(/\//g, '_').replace(/^_/, '') || 'index';
+    entries.push({ name: entryName, path: htmlPath });
+  }
+  
+  // Write entries file for Vite
+  await fs.writeFile(
+    path.join(htmlDir, 'html-entries.json'),
+    JSON.stringify(entries, null, 2),
+    'utf-8'
+  );
 }
 
 // Generate docPages.js file that exports all pages
@@ -242,6 +411,8 @@ async function main() {
     });
 
     await generateDocPagesFile(pages);
+    await generateIndexPage();
+    await generateHtmlEntries(pages);
     console.log(`\n✓ Generated docPages.js with ${pages.length} pages (sorted by number)`);
     console.log("\n✅ Page generation complete!");
   } catch (error) {

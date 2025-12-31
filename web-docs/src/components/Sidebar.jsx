@@ -1,9 +1,38 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
 import { docPages } from "../lib/docPages";
 
-function Sidebar() {
-  const location = useLocation();
+function Sidebar({ currentPath: propCurrentPath }) {
+  const basePath = import.meta.env.BASE_URL || '/';
+  
+  // Get current path from window location, normalize by removing .html and base path
+  const getCurrentPath = () => {
+    if (typeof window === 'undefined') return propCurrentPath || '/';
+    let path = window.location.pathname;
+    // Remove base path if present
+    if (basePath !== '/' && path.startsWith(basePath)) {
+      path = path.slice(basePath.length);
+    }
+    // Remove leading slash if present, then add it back for consistency
+    if (!path.startsWith('/')) path = '/' + path;
+    // Remove .html extension
+    if (path.endsWith('.html')) {
+      path = path.slice(0, -5);
+    }
+    // Handle index
+    if (path === '/index' || path === '/index.html') return '/';
+    return path || '/';
+  };
+  
+  const currentPath = getCurrentPath();
+  
+  const getHref = (route) => {
+    // In dev mode, Vite handles routing without .html
+    // In production, we need .html extensions
+    const isDev = import.meta.env.DEV;
+    const htmlRoute = route === '/' ? route : (isDev ? route : route + '.html');
+    if (basePath === '/') return htmlRoute;
+    return basePath + htmlRoute.replace(/^\//, '');
+  };
 
   // Sort function to extract number from id
   const sortByNumber = (a, b) => {
@@ -19,10 +48,10 @@ function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto z-10">
       <div className="p-4">
-        <Link to="/" className="block mb-6">
+        <a href={getHref("/")} className="block mb-6">
           <h1 className="text-xl font-bold text-gray-900">Roro Kube</h1>
           <p className="text-sm text-gray-500">Documentation</p>
-        </Link>
+        </a>
         {docPages.length > 0 ? (
           <nav className="space-y-4">
             {/* Documentation Section */}
@@ -33,17 +62,17 @@ function Sidebar() {
                 </h2>
                 <div className="space-y-1">
                   {docs.map((page) => (
-                    <Link
+                    <a
                       key={page.route}
-                      to={page.route}
+                      href={getHref(page.route)}
                       className={`block py-2 px-3 rounded ${
-                        location.pathname === page.route
+                        currentPath === page.route
                           ? "bg-blue-50 text-blue-700 font-medium"
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {page.title}
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -57,17 +86,17 @@ function Sidebar() {
                 </h2>
                 <div className="space-y-1">
                   {decisions.map((page) => (
-                    <Link
+                    <a
                       key={page.route}
-                      to={page.route}
+                      href={getHref(page.route)}
                       className={`block py-2 px-3 rounded ${
-                        location.pathname === page.route
+                        currentPath === page.route
                           ? "bg-blue-50 text-blue-700 font-medium"
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {page.title}
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>
