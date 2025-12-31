@@ -70,7 +70,7 @@ jobs:
         run: cd web-docs && npm run generate
 
       - name: Build web-docs
-        run: cd web-docs && npm run build
+        run: cd web-docs && BASE_PATH=/app/ npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

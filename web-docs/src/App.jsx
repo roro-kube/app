@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import DocsLayout from "./layouts/DocsLayout";
 import { docPages } from "./lib/docPages";
 
@@ -15,14 +15,14 @@ function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {docPages.length > 0 ? (
             docPages.map((page) => (
-              <a
+              <Link
                 key={page.route}
-                href={page.route}
+                to={page.route}
                 className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition"
               >
                 <h2 className="text-xl font-semibold mb-2">{page.title}</h2>
                 <p className="text-sm text-gray-500 capitalize">{page.type}</p>
-              </a>
+              </Link>
             ))
           ) : (
             <p className="text-gray-500">
@@ -40,8 +40,11 @@ function HomePage() {
 }
 
 function App() {
+  // Get base path from environment or default to '/'
+  const basePath = import.meta.env.BASE_URL || '/'
+  
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basePath}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         {docPages.map((page) => {

@@ -19,7 +19,7 @@
   },
   "scripts": {
     "generate": "node scripts/generate-pages.mjs",
-    "build": "npm run generate && vite build",
+    "build": "npm run generate && vite build && BASE_PATH=${BASE_PATH:-/} node scripts/prerender.mjs",
     "dev": "npm run generate && vite dev",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,mjs}\" \"scripts/**/*.{js,mjs}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,mjs}\" \"scripts/**/*.{js,mjs}\""
