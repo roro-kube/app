@@ -76,3 +76,20 @@ run = "cargo build -p roro_gui --release"
 description = "Build the CLI crate in release mode"
 run = "cargo build -p roro_cli --release"
 
+[web-docs-install]
+description = "Install npm dependencies for web-docs"
+run = "cd web-docs && npm install"
+
+[web-docs-generate]
+description = "Generate page files from backlog/docs"
+run = "cd web-docs && npm run generate"
+
+[web-docs-build]
+description = "Build the docs site (runs generate + vite build)"
+depends = ["web-docs-generate"]
+run = "cd web-docs && npm run build"
+
+[web-docs-build-full]
+description = "Build icons + tailwind + web-docs (for local dev)"
+depends = ["icons-build", "tailwind-build", "web-docs-build"]
+

@@ -23,6 +23,15 @@ target
 # Generated icon files
 icons/dist/
 
+# Generated GUI assets (tailwind CSS, icons, branding)
+gui/assets/
+
+# Web-docs generated files
+web-docs/dist/
+web-docs/src/pages/
+web-docs/src/lib/docPages.js
+web-docs/public/
+
 # macOS system files
 .DS_Store
 **/.DS_Store
