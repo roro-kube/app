@@ -32,12 +32,43 @@ copy_and_flatten_md() {
     return 0
   fi
 
+  # Ensure destination directory exists
+  mkdir -p "$dest_dir" || {
+    echo "❌ Failed to create destination directory: $dest_dir"
+    return 1
+  }
+
   # Find all .md files recursively and copy them to the destination (flattened)
-  while IFS= read -r -d '' file; do
+  # Use a temporary approach that's more compatible with strict error handling
+  local temp_file
+  temp_file=$(mktemp) || {
+    echo "❌ Failed to create temporary file"
+    return 1
+  }
+  
+  # Find files and write to temp file, then process
+  if ! find "$source_dir" -type f -name "*.md" > "$temp_file" 2>&1; then
+    echo "❌ Error running find on $source_dir"
+    cat "$temp_file"
+    rm -f "$temp_file"
+    return 1
+  fi
+  
+  # Process each file found
+  while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    [ ! -f "$file" ] && continue
+    
     local filename=$(basename "$file")
-    cp "$file" "$dest_dir/$filename"
+    if ! cp "$file" "$dest_dir/$filename"; then
+      echo "❌ Failed to copy $file to $dest_dir/$filename"
+      rm -f "$temp_file"
+      return 1
+    fi
     ((file_count++))
-  done < <(find "$source_dir" -type f -name "*.md" -print0)
+  done < "$temp_file"
+  
+  rm -f "$temp_file"
 
   echo "✅ Copied $file_count markdown files from $source_dir to $dest_dir"
   return 0
