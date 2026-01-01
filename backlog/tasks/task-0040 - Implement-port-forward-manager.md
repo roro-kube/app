@@ -1,10 +1,10 @@
 ---
 id: task-0040
 title: Implement port forward manager
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-01-01 16:38'
-updated_date: '2026-01-01 21:11'
+updated_date: '2026-01-01 22:21'
 labels:
   - port-forwarding
   - backend
@@ -12,7 +12,7 @@ milestone: m-5
 dependencies:
   - task-0028
 priority: high
-ordinal: 1000
+ordinal: 3000
 ---
 
 ## Description

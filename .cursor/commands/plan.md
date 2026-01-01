@@ -79,3 +79,4 @@ mise exec -- backlog task edit TASK_ID -s "Done"
 - Don't mark done until all AC pass
 - Don't use excessive comments in code, keep the code simple and terse
 - Be terse in your responses, unless specifically instructed do not output your thoughts or explanations
+- add running "mise run quality" after all steps and after any complex implementations

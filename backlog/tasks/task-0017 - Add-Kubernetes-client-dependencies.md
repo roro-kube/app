@@ -4,7 +4,7 @@ title: Add Kubernetes client dependencies
 status: Done
 assignee: []
 created_date: '2026-01-01 16:37'
-updated_date: '2026-01-01 20:18'
+updated_date: '2026-01-01 22:21'
 labels:
   - dependencies
   - kubernetes
@@ -12,7 +12,7 @@ labels:
 milestone: m-1
 dependencies: []
 priority: high
-ordinal: 1000
+ordinal: 2000
 ---
 
 ## Description
