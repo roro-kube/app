@@ -4,14 +4,14 @@ title: Create user documentation
 status: To Do
 assignee: []
 created_date: '2026-01-01 16:38'
-updated_date: '2026-01-01 16:42'
+updated_date: '2026-01-01 19:27'
 labels:
   - documentation
   - user-docs
 milestone: m-11
 dependencies:
   - task-0023
-priority: medium
+priority: low
 ---
 
 ## Description

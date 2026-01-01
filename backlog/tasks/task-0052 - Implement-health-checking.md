@@ -4,7 +4,7 @@ title: Implement health checking
 status: To Do
 assignee: []
 created_date: '2026-01-01 16:38'
-updated_date: '2026-01-01 16:42'
+updated_date: '2026-01-01 19:27'
 labels:
   - health
   - monitoring
@@ -14,7 +14,7 @@ milestone: m-10
 dependencies:
   - task-0051
   - task-0050
-priority: medium
+priority: low
 ---
 
 ## Description

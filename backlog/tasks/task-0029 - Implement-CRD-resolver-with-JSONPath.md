@@ -4,16 +4,16 @@ title: Implement CRD resolver with JSONPath
 status: To Do
 assignee: []
 created_date: '2026-01-01 16:37'
-updated_date: '2026-01-01 16:42'
+updated_date: '2026-01-01 19:26'
 labels:
   - kubernetes
   - crd
   - jsonpath
   - backend
-milestone: m-2
+milestone: m-10
 dependencies:
   - task-0028
-priority: high
+priority: low
 ---
 
 ## Description

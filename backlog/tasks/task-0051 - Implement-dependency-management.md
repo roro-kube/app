@@ -4,7 +4,7 @@ title: Implement dependency management
 status: To Do
 assignee: []
 created_date: '2026-01-01 16:38'
-updated_date: '2026-01-01 16:42'
+updated_date: '2026-01-01 19:26'
 labels:
   - dependencies
   - core
@@ -12,7 +12,7 @@ labels:
 milestone: m-10
 dependencies:
   - task-0038
-priority: medium
+priority: low
 ---
 
 ## Description
