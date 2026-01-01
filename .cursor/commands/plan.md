@@ -77,3 +77,5 @@ mise exec -- backlog task edit TASK_ID -s "Done"
 - Never proceed with failing builds or tests
 - State progress after each iteration
 - Don't mark done until all AC pass
+- Don't use excessive comments in code, keep the code simple and terse
+- Be terse in your responses, unless specifically instructed do not output your thoughts or explanations

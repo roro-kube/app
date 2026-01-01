@@ -13,6 +13,7 @@ roro_core = { path = "../core" }
 clap = { version = "4.5", features = ["derive"] }
 tokio.workspace = true
 async-trait = "0.1"
+k8s-openapi = { version = "0.26", features = ["v1_30"] }
 
 [lints]
 workspace = true

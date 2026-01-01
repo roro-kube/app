@@ -1,10 +1,10 @@
 ---
 id: task-0028
 title: Implement Kubernetes client initialization
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-01-01 16:37'
-updated_date: '2026-01-01 16:42'
+updated_date: '2026-01-01 21:10'
 labels:
   - kubernetes
   - backend
@@ -12,6 +12,7 @@ milestone: m-2
 dependencies:
   - task-0017
 priority: high
+ordinal: 1000
 ---
 
 ## Description

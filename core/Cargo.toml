@@ -12,6 +12,11 @@ path = "src/lib.rs"
 roro_persistence = { path = "../persistence" }
 roro_domain = { path = "../domain" }
 thiserror.workspace = true
+kube.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+k8s-openapi = { version = "0.26", features = ["v1_30"] }
 
 [lints]
 workspace = true

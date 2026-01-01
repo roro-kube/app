@@ -1,10 +1,10 @@
 ---
 id: task-0017
 title: Add Kubernetes client dependencies
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-01-01 16:37'
-updated_date: '2026-01-01 17:09'
+updated_date: '2026-01-01 20:18'
 labels:
   - dependencies
   - kubernetes
@@ -12,7 +12,7 @@ labels:
 milestone: m-1
 dependencies: []
 priority: high
-ordinal: 2000
+ordinal: 1000
 ---
 
 ## Description

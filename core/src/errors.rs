@@ -1,7 +1,3 @@
-// Core layer error types
-// This module defines all error types used in the core layer.
-// Core errors can transform errors from domain and persistence layers.
-
 use thiserror::Error;
 
 use roro_domain::DomainError;
@@ -25,4 +21,20 @@ pub enum CoreError {
     /// Bridge transformation error
     #[error("Bridge error: {0}")]
     Bridge(String),
+
+    /// Kubernetes API error
+    #[error("Kubernetes error: {0}")]
+    Kubernetes(String),
+
+    /// Kubeconfig loading or parsing error
+    #[error("Kubeconfig error: {0}")]
+    Kubeconfig(String),
+
+    /// Cluster connection error
+    #[error("Connection error: {0}")]
+    Connection(String),
+
+    /// Context not found error
+    #[error("Context not found: {0}")]
+    ContextNotFound(String),
 }
