@@ -11,7 +11,9 @@ path = "src/lib.rs"
 [dependencies]
 async-trait = "0.1"
 git2 = { workspace = true }
+roro_domain = { path = "../domain" }
 serde = { workspace = true }
+serde_json = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["test-util"] }
 

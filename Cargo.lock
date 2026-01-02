@@ -4016,7 +4016,9 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "git2",
+ "roro_domain",
  "serde",
+ "serde_json",
  "tempfile",
  "thiserror 1.0.69",
  "tokio",

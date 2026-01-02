@@ -1,11 +1,13 @@
 // Domain layer crate
 // This crate contains business logic and domain models.
 
+pub mod config;
 pub mod errors;
 pub mod handlers;
 pub mod processor;
 pub mod types;
 
+pub use config::{AppConfig, GlobalConfig};
 pub use errors::DomainError;
 pub use handlers::{HandlerRegistry, OperationHandler};
 pub use processor::DomainProcessor;
