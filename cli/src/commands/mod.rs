@@ -4,8 +4,10 @@
 // Each command is a thin controller that delegates to the Core layer.
 
 pub mod status;
+pub mod sync;
 
 pub use status::StatusCommand;
+pub use sync::SyncCommand;
 
 /// Trait for CLI commands
 ///

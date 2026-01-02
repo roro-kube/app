@@ -50,3 +50,6 @@ web-docs/yarn-error.log*
 .DS_Store
 **/.DS_Store
 **/node_modules
+
+#folder for testing
+.tmp/

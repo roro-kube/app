@@ -23,11 +23,11 @@ Implement functionality to clone Git repositories and initialize local Git repos
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Git repository cloning implemented using git2 or gix
-- [ ] #2 Support for SSH and HTTPS authentication
-- [ ] #3 Local Git repository initialization implemented
-- [ ] #4 Error handling for network failures and authentication errors
-- [ ] #5 Unit tests verify cloning and initialization
+- [x] #1 Git repository cloning implemented using git2 or gix
+- [x] #2 Support for SSH and HTTPS authentication
+- [x] #3 Local Git repository initialization implemented
+- [x] #4 Error handling for network failures and authentication errors
+- [x] #5 Unit tests verify cloning and initialization
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -42,5 +42,26 @@ Implement functionality to clone Git repositories and initialize local Git repos
 ## Implementation Notes
 
 <!-- SECTION:NOTES:BEGIN -->
-(To be filled during implementation)
+- Created `persistence/src/git/mod.rs` module with Git operations
+- Added `git2` dependency to `persistence/Cargo.toml` (from workspace dependencies)
+- Extended `PersistenceError` enum with Git-specific error variants:
+  - `Git(String)` - General Git operation errors
+  - `Network(String)` - Network-related errors during Git operations
+  - `Authentication(String)` - Authentication failures
+- Implemented `clone_repository()` function:
+  - Supports both SSH and HTTPS authentication
+  - Accepts optional credentials (username, password/token)
+  - Uses `git2::build::RepoBuilder` for cloning
+  - Handles authentication via `RemoteCallbacks` with fallback to SSH agent and default credentials
+  - Properly converts string references to owned Strings for async task spawning
+- Implemented `init_repository()` function:
+  - Initializes local Git repositories (both regular and bare)
+  - Uses `Repository::init_opts()` with configurable options
+- Both functions use `tokio::task::spawn_blocking` to handle blocking Git operations
+- Added comprehensive unit tests:
+  - Test repository initialization (regular and bare)
+  - Test cloning public repositories
+  - Test cloning with credentials (handles authentication errors gracefully)
+- All tests pass successfully
+- Module exported from `persistence/src/lib.rs`
 <!-- SECTION:NOTES:END -->

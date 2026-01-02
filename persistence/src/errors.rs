@@ -21,4 +21,16 @@ pub enum PersistenceError {
     /// Serialization/deserialization error
     #[error("Serialization error: {0}")]
     Serialization(String),
+
+    /// Git operation failed
+    #[error("Git error: {0}")]
+    Git(String),
+
+    /// Network error during Git operation
+    #[error("Network error: {0}")]
+    Network(String),
+
+    /// Authentication error during Git operation
+    #[error("Authentication error: {0}")]
+    Authentication(String),
 }
