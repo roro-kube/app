@@ -5,7 +5,7 @@ edition.workspace = true
 authors.workspace = true
 
 [[bin]]
-name = "roro-kube"
+name = "roro-kube-cli"
 path = "src/main.rs"
 
 [dependencies]

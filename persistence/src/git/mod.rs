@@ -64,7 +64,7 @@ pub async fn clone_repository(
         };
 
         // Try clone with filter=tree:0 first
-        let mut callbacks = create_callbacks(credentials.clone());
+        let callbacks = create_callbacks(credentials.clone());
         let mut fetch_options = FetchOptions::new();
         fetch_options.remote_callbacks(callbacks);
         // Set filter via custom headers
@@ -77,7 +77,7 @@ pub async fn clone_repository(
         
         // If filter approach fails, try depth 1 (shallow clone)
         if clone_result.is_err() {
-            let mut callbacks_fallback = create_callbacks(credentials_clone);
+            let callbacks_fallback = create_callbacks(credentials_clone);
             let mut fetch_options_fallback = FetchOptions::new();
             fetch_options_fallback.remote_callbacks(callbacks_fallback);
             fetch_options_fallback.depth(1);
