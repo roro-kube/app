@@ -32,55 +32,73 @@ pub async fn clone_repository(
     let path = path.to_path_buf();
     // Convert credentials to owned Strings before moving into closure
     let credentials = credentials.map(|(u, p)| (u.to_string(), p.to_string()));
+    // Clone credentials for fallback attempt
+    let credentials_clone = credentials.clone();
 
     task::spawn_blocking(move || {
-        let mut callbacks = RemoteCallbacks::new();
+        // Helper function to create callbacks
+        let create_callbacks = |creds: Option<(String, String)>| {
+            let mut callbacks = RemoteCallbacks::new();
+            if let Some((username, password)) = creds {
+                let username_clone = username.clone();
+                callbacks.credentials(move |_url, username_from_url, _allowed_types| {
+                    let username = username_from_url.unwrap_or(&username_clone);
+                    if let Ok(cred) = Cred::userpass_plaintext(username, &password) {
+                        return Ok(cred);
+                    }
+                    if let Ok(cred) = Cred::ssh_key_from_agent(username) {
+                        return Ok(cred);
+                    }
+                    Cred::default()
+                });
+            } else {
+                callbacks.credentials(|_url, username_from_url, _allowed_types| {
+                    let username = username_from_url.unwrap_or("git");
+                    if let Ok(cred) = Cred::ssh_key_from_agent(username) {
+                        return Ok(cred);
+                    }
+                    Cred::default()
+                });
+            }
+            callbacks
+        };
+
+        // Try clone with filter=tree:0 first
+        let mut callbacks = create_callbacks(credentials.clone());
         let mut fetch_options = FetchOptions::new();
-
-        // Set up authentication callbacks
-        if let Some((username, password)) = credentials {
-
-            let username_clone = username.clone();
-            callbacks.credentials(move |_url, username_from_url, _allowed_types| {
-                let username = username_from_url.unwrap_or(&username_clone);
-
-                // Try HTTPS authentication first
-                if let Ok(cred) = Cred::userpass_plaintext(username, &password) {
-                    return Ok(cred);
-                }
-
-                // Try SSH key authentication (will use default SSH keys)
-                if let Ok(cred) = Cred::ssh_key_from_agent(username) {
-                    return Ok(cred);
-                }
-
-                // Try default credentials
-                Cred::default()
-            });
-        } else {
-            // No credentials provided - try default authentication methods
-            callbacks.credentials(|_url, username_from_url, _allowed_types| {
-                let username = username_from_url.unwrap_or("git");
-
-                // Try SSH key from agent
-                if let Ok(cred) = Cred::ssh_key_from_agent(username) {
-                    return Ok(cred);
-                }
-
-                // Try default credentials
-                Cred::default()
-            });
-        }
-
         fetch_options.remote_callbacks(callbacks);
-
-        // Clone the repository
+        // Set filter via custom headers
+        fetch_options.custom_headers(&["filter=tree:0"]);
+        
         let mut builder = git2::build::RepoBuilder::new();
         builder.fetch_options(fetch_options);
-
-        builder
-            .clone(&url, &path)
-            .map_err(|e| {
+        
+        let clone_result = builder.clone(&url, &path);
+        
+        // If filter approach fails, try depth 1 (shallow clone)
+        if clone_result.is_err() {
+            let mut callbacks_fallback = create_callbacks(credentials_clone);
+            let mut fetch_options_fallback = FetchOptions::new();
+            fetch_options_fallback.remote_callbacks(callbacks_fallback);
+            fetch_options_fallback.depth(1);
+            
+            let mut builder_fallback = git2::build::RepoBuilder::new();
+            builder_fallback.fetch_options(fetch_options_fallback);
+            
+            builder_fallback
+                .clone(&url, &path)
+                .map_err(|e| {
+                    let error_msg = e.message().to_string();
+                    if error_msg.contains("authentication") || error_msg.contains("credential") {
+                        PersistenceError::Authentication(format!("Failed to authenticate: {}", error_msg))
+                    } else if error_msg.contains("network") || error_msg.contains("connection") {
+                        PersistenceError::Network(format!("Network error: {}", error_msg))
+                    } else {
+                        PersistenceError::Git(format!("Failed to clone repository: {}", error_msg))
+                    }
+                })?;
+        } else {
+            clone_result.map_err(|e| {
                 let error_msg = e.message().to_string();
                 if error_msg.contains("authentication") || error_msg.contains("credential") {
                     PersistenceError::Authentication(format!("Failed to authenticate: {}", error_msg))
@@ -90,6 +108,7 @@ pub async fn clone_repository(
                     PersistenceError::Git(format!("Failed to clone repository: {}", error_msg))
                 }
             })?;
+        }
 
         Ok(())
     })
@@ -146,6 +165,8 @@ pub async fn fetch_latest(path: &Path, credentials: Option<(&str, &str)>) -> Res
     let path = path.to_path_buf();
     // Convert credentials to owned Strings before moving into closure
     let credentials = credentials.map(|(u, p)| (u.to_string(), p.to_string()));
+    // Clone credentials for fallback attempt
+    let credentials_clone = credentials.clone();
 
     task::spawn_blocking(move || {
         let repo = Repository::open(&path).map_err(|e| {
@@ -157,56 +178,76 @@ pub async fn fetch_latest(path: &Path, credentials: Option<(&str, &str)>) -> Res
             PersistenceError::Git(format!("Failed to find remote 'origin': {}", e.message()))
         })?;
 
-        let mut callbacks = RemoteCallbacks::new();
-        let mut fetch_options = FetchOptions::new();
-
-        // Set up authentication callbacks
-        if let Some((username, password)) = credentials {
-            let username_clone = username.clone();
-            callbacks.credentials(move |_url, username_from_url, _allowed_types| {
-                let username = username_from_url.unwrap_or(&username_clone);
-
-                // Try HTTPS authentication first
-                if let Ok(cred) = Cred::userpass_plaintext(username, &password) {
-                    return Ok(cred);
-                }
-
-                // Try SSH key authentication (will use default SSH keys)
-                if let Ok(cred) = Cred::ssh_key_from_agent(username) {
-                    return Ok(cred);
-                }
-
-                // Try default credentials
-                Cred::default()
-            });
-        } else {
-            // No credentials provided - try default authentication methods
-            callbacks.credentials(|_url, username_from_url, _allowed_types| {
-                let username = username_from_url.unwrap_or("git");
-
-                // Try SSH key from agent
-                if let Ok(cred) = Cred::ssh_key_from_agent(username) {
-                    return Ok(cred);
-                }
-
-                // Try default credentials
-                Cred::default()
-            });
-        }
-
-        fetch_options.remote_callbacks(callbacks);
-
-        // Fetch from remote
-        remote.fetch(&["refs/heads/*:refs/remotes/origin/*"], Some(&mut fetch_options), None).map_err(|e| {
-            let error_msg = e.message().to_string();
-            if error_msg.contains("authentication") || error_msg.contains("credential") {
-                PersistenceError::Authentication(format!("Failed to authenticate: {}", error_msg))
-            } else if error_msg.contains("network") || error_msg.contains("connection") {
-                PersistenceError::Network(format!("Network error: {}", error_msg))
+        // Helper function to create callbacks
+        let create_callbacks = |creds: Option<(String, String)>| {
+            let mut callbacks = RemoteCallbacks::new();
+            if let Some((username, password)) = creds {
+                let username_clone = username.clone();
+                callbacks.credentials(move |_url, username_from_url, _allowed_types| {
+                    let username = username_from_url.unwrap_or(&username_clone);
+                    if let Ok(cred) = Cred::userpass_plaintext(username, &password) {
+                        return Ok(cred);
+                    }
+                    if let Ok(cred) = Cred::ssh_key_from_agent(username) {
+                        return Ok(cred);
+                    }
+                    Cred::default()
+                });
             } else {
-                PersistenceError::Git(format!("Failed to fetch: {}", error_msg))
+                callbacks.credentials(|_url, username_from_url, _allowed_types| {
+                    let username = username_from_url.unwrap_or("git");
+                    if let Ok(cred) = Cred::ssh_key_from_agent(username) {
+                        return Ok(cred);
+                    }
+                    Cred::default()
+                });
             }
-        })?;
+            callbacks
+        };
+
+        // Try fetch with filter=tree:0 first
+        let callbacks = create_callbacks(credentials.clone());
+        let mut fetch_options = FetchOptions::new();
+        fetch_options.remote_callbacks(callbacks);
+        // Set filter via custom headers
+        fetch_options.custom_headers(&["filter=tree:0"]);
+
+        let fetch_result = remote.fetch(&["refs/heads/*:refs/remotes/origin/*"], Some(&mut fetch_options), None);
+
+        // If filter approach fails, try depth 1 (shallow fetch)
+        if fetch_result.is_err() {
+            // Get a fresh remote reference for fallback
+            let mut remote_fallback = repo.find_remote("origin").map_err(|e| {
+                PersistenceError::Git(format!("Failed to find remote 'origin': {}", e.message()))
+            })?;
+            
+            let callbacks_fallback = create_callbacks(credentials_clone);
+            let mut fetch_options_fallback = FetchOptions::new();
+            fetch_options_fallback.remote_callbacks(callbacks_fallback);
+            fetch_options_fallback.depth(1);
+
+            remote_fallback.fetch(&["refs/heads/*:refs/remotes/origin/*"], Some(&mut fetch_options_fallback), None).map_err(|e| {
+                let error_msg = e.message().to_string();
+                if error_msg.contains("authentication") || error_msg.contains("credential") {
+                    PersistenceError::Authentication(format!("Failed to authenticate: {}", error_msg))
+                } else if error_msg.contains("network") || error_msg.contains("connection") {
+                    PersistenceError::Network(format!("Network error: {}", error_msg))
+                } else {
+                    PersistenceError::Git(format!("Failed to fetch: {}", error_msg))
+                }
+            })?;
+        } else {
+            fetch_result.map_err(|e| {
+                let error_msg = e.message().to_string();
+                if error_msg.contains("authentication") || error_msg.contains("credential") {
+                    PersistenceError::Authentication(format!("Failed to authenticate: {}", error_msg))
+                } else if error_msg.contains("network") || error_msg.contains("connection") {
+                    PersistenceError::Network(format!("Network error: {}", error_msg))
+                } else {
+                    PersistenceError::Git(format!("Failed to fetch: {}", error_msg))
+                }
+            })?;
+        }
 
         Ok(())
     })
