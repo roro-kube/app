@@ -1,6 +1,6 @@
 // Sync command
 //
-// Command for syncing workspace configurations from Git repositories.
+// Command for syncing configurations from Git repositories.
 
 use std::path::PathBuf;
 
@@ -8,10 +8,10 @@ use roro_persistence::{sync_repository, PersistenceError};
 
 use super::Command;
 
-/// Sync command - syncs workspace configurations from Git repositories
+/// Sync command - syncs configurations from Git repositories
 ///
-/// This command synchronizes app configurations from Git repositories,
-/// pulling the latest changes and updating local workspace configurations.
+/// This command synchronizes configurations from Git repositories,
+/// pulling the latest changes and updating local configurations.
 pub struct SyncCommand {
     url: String,
     path: PathBuf,

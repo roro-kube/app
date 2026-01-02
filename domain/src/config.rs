@@ -1,62 +1,11 @@
 // Configuration schema definitions
 //
 // This module contains Rust structs representing the configuration file schemas:
-// - workspace.json: Workspace-level configuration
 // - app.json: App-level configuration
 // - environment.json: Environment-specific configuration
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
-/// Workspace configuration schema
-///
-/// Represents the structure of workspace.json at the root of .kube-apps/
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub struct WorkspaceConfig {
-    /// Configuration schema version
-    pub version: String,
-    /// Git synchronization settings
-    pub git: GitConfig,
-    /// User identity configuration
-    pub user: UserConfig,
-    /// Cluster connection settings
-    pub cluster: ClusterConfig,
-}
-
-/// Git synchronization configuration
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub struct GitConfig {
-    /// Remote repository URL
-    pub remote: String,
-    /// Branch to sync from
-    pub branch: String,
-    /// Enable automatic synchronization
-    pub auto_sync: bool,
-    /// Sync interval in seconds
-    pub sync_interval_seconds: u64,
-}
-
-/// User identity configuration
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub struct UserConfig {
-    /// Identity provider (local, github, gitlab)
-    pub identity_provider: String,
-    /// Username (auto-detected or manually set)
-    pub username: String,
-}
-
-/// Cluster connection configuration
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub struct ClusterConfig {
-    /// Kubernetes context name
-    pub context: String,
-    /// Namespace prefix for apps
-    pub namespace_prefix: String,
-}
 
 /// App configuration schema
 ///
@@ -194,34 +143,6 @@ pub struct EnvironmentConfig {
     pub name: String,
     /// Environment-specific values
     pub values: HashMap<String, serde_json::Value>,
-}
-
-impl WorkspaceConfig {
-    /// Validate the workspace configuration
-    pub fn validate(&self) -> Result<(), String> {
-        if self.version.is_empty() {
-            return Err("version cannot be empty".to_string());
-        }
-        if self.git.remote.is_empty() {
-            return Err("git.remote cannot be empty".to_string());
-        }
-        if self.git.branch.is_empty() {
-            return Err("git.branch cannot be empty".to_string());
-        }
-        if self.user.identity_provider.is_empty() {
-            return Err("user.identity_provider cannot be empty".to_string());
-        }
-        if self.user.username.is_empty() {
-            return Err("user.username cannot be empty".to_string());
-        }
-        if self.cluster.context.is_empty() {
-            return Err("cluster.context cannot be empty".to_string());
-        }
-        if self.cluster.namespace_prefix.is_empty() {
-            return Err("cluster.namespace_prefix cannot be empty".to_string());
-        }
-        Ok(())
-    }
 }
 
 impl AppConfig {

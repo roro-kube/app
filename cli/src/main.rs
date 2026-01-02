@@ -22,7 +22,7 @@ pub struct Cli {
 pub enum Commands {
     /// Show application status
     Status,
-    /// Sync workspace configurations from Git repositories
+    /// Sync configurations from Git repositories
     Sync {
         /// The remote repository URL (SSH or HTTPS)
         #[arg(long)]
