@@ -132,12 +132,3 @@ This document describes the layered modular architecture pattern...
 - Related: decision-0009 (Layered Modular Architecture Pattern)
 - Source: `overview/architecture.md`
 ```
-
-## Migration from Overview Files
-
-When migrating content from `overview/` directory:
-- Preserve structure and organization
-- Add references to source files
-- Link to related decisions where applicable
-- Organize into appropriate paths and types
-- Update content as needed for backlog context

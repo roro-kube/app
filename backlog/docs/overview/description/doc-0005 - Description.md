@@ -65,33 +65,64 @@ Workspace-based approach similar to Cargo workspaces:
 **workspace.json** structure:
 ```json
 {
-  "version": "1.0.0",
-  "git": {
-    "remote": "https://github.com/user/kube-apps",
-    "branch": "main",
-    "auto_sync": true,
-    "sync_interval_seconds": 300
-  },
-  "user": {
-    "identity_provider": "local|github|gitlab",
-    "username": "auto-detect-or-manual"
-  },
-  "cluster": {
-    "context": "minikube",
-    "namespace_prefix": "apps"
-  }
+    "roro-kube-version": "1.0.0",
+    "kubectlContext": "rancher-desktop",
+    "remotes": [
+        {
+            "git": {
+                "remote": "https://github.com/user/kube-apps",
+                "branch": "main",
+                "auto_sync": true,
+                "sync_interval_seconds": 300
+            },
+            "user": {
+                "identity_provider": "local|github|gitlab",
+                "username": "auto-detect-or-manual"
+            },
+            "apps": [
+                {
+                    "name": "API",
+                    "namespace": "my-new-namespace",
+                    "kubectlContext": "rancher-desktop",
+                    "portForwardingOverrides": [
+                        {
+                            "localport": "3333",
+                            "name": "api-service",
+                            "port": 5555
+                        },
+                    ]
+                }
+            ]
+        }
+    ]
 }
 ```
 
 ### 4. App Configuration
 
-**apps/my-app/app.json** includes:
-- App metadata (name, version, description)
-- Manifest configuration (type, path, template engine)
-- Connection configuration (port forwarding, ingress, load balancer)
-- Dependencies (apps, CRDs)
-- Deployment strategy
-- Variables (static, environment, CRD-based)
+```json
+[
+    {
+        "name": "API",
+        "description": "BFF Client Portal API",
+        "manifestsPath": "./infrastructure/local/k8s",
+        "portForward": [
+            {
+                "localport": "3333",
+                "name": "api-service",
+                "port": 5555,
+                "kind": "service"
+            },
+            {
+                "localport": "2222",
+                "name": "metrics-service",
+                "port": "prometheus",
+                "kind": "service"
+            }
+        ]
+    }
+]
+```
 
 ## CRD Design
 
