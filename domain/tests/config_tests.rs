@@ -1,8 +1,8 @@
 // App config tests
 //
-// Tests for AppConfig, PortForwardConfig, and PortValue.
+// Tests for AppConfig, PortForwardingConfig, and PortValue.
 
-use roro_domain::{AppConfig, DomainError, PortForwardConfig, PortValue};
+use roro_domain::{AppConfig, DomainError, PortForwardingConfig, PortValue};
 
 #[test]
 fn test_port_value_numeric() {
@@ -60,7 +60,7 @@ fn test_port_value_deserialize_overflow() {
 
 #[test]
 fn test_port_forward_config_creation() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "3333".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -75,7 +75,7 @@ fn test_port_forward_config_creation() {
 
 #[test]
 fn test_port_forward_config_validation_success() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "3333".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -87,7 +87,7 @@ fn test_port_forward_config_validation_success() {
 
 #[test]
 fn test_port_forward_config_validation_empty_localport() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -96,16 +96,16 @@ fn test_port_forward_config_validation_empty_localport() {
 
     let result = config.validate();
     assert!(result.is_err());
-    if let Err(DomainError::PortForwardValidation(msg)) = result {
+    if let Err(DomainError::PortForwardingValidation(msg)) = result {
         assert!(msg.contains("localport cannot be empty"));
     } else {
-        panic!("Expected PortForwardValidation error");
+        panic!("Expected PortForwardingValidation error");
     }
 }
 
 #[test]
 fn test_port_forward_config_validation_zero_localport() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "0".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -114,16 +114,16 @@ fn test_port_forward_config_validation_zero_localport() {
 
     let result = config.validate();
     assert!(result.is_err());
-    if let Err(DomainError::PortForwardValidation(msg)) = result {
+    if let Err(DomainError::PortForwardingValidation(msg)) = result {
         assert!(msg.contains("localport cannot be 0"));
     } else {
-        panic!("Expected PortForwardValidation error");
+        panic!("Expected PortForwardingValidation error");
     }
 }
 
 #[test]
 fn test_port_forward_config_validation_invalid_localport() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "invalid".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -132,16 +132,16 @@ fn test_port_forward_config_validation_invalid_localport() {
 
     let result = config.validate();
     assert!(result.is_err());
-    if let Err(DomainError::PortForwardValidation(msg)) = result {
+    if let Err(DomainError::PortForwardingValidation(msg)) = result {
         assert!(msg.contains("must be a valid port number"));
     } else {
-        panic!("Expected PortForwardValidation error");
+        panic!("Expected PortForwardingValidation error");
     }
 }
 
 #[test]
 fn test_port_forward_config_validation_empty_name() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "3333".to_string(),
         name: "".to_string(),
         port: PortValue::Numeric(5555),
@@ -150,16 +150,16 @@ fn test_port_forward_config_validation_empty_name() {
 
     let result = config.validate();
     assert!(result.is_err());
-    if let Err(DomainError::PortForwardValidation(msg)) = result {
+    if let Err(DomainError::PortForwardingValidation(msg)) = result {
         assert!(msg.contains("name cannot be empty"));
     } else {
-        panic!("Expected PortForwardValidation error");
+        panic!("Expected PortForwardingValidation error");
     }
 }
 
 #[test]
 fn test_port_forward_config_validation_empty_kind() {
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         local_port: "3333".to_string(),
         name: "api-service".to_string(),
         port: PortValue::Numeric(5555),
@@ -168,10 +168,10 @@ fn test_port_forward_config_validation_empty_kind() {
 
     let result = config.validate();
     assert!(result.is_err());
-    if let Err(DomainError::PortForwardValidation(msg)) = result {
+    if let Err(DomainError::PortForwardingValidation(msg)) = result {
         assert!(msg.contains("kind cannot be empty"));
     } else {
-        panic!("Expected PortForwardValidation error");
+        panic!("Expected PortForwardingValidation error");
     }
 }
 
@@ -184,7 +184,7 @@ fn test_port_forward_config_deserialize_from_json() {
         "kind": "service"
     }"#;
 
-    let config: PortForwardConfig = serde_json::from_str(json).expect("deserialization should succeed");
+    let config: PortForwardingConfig = serde_json::from_str(json).expect("deserialization should succeed");
     assert_eq!(config.local_port, "3333");
     assert_eq!(config.name, "api-service");
     assert_eq!(config.port, PortValue::Numeric(5555));
@@ -200,7 +200,7 @@ fn test_port_forward_config_deserialize_named_port() {
         "kind": "service"
     }"#;
 
-    let config: PortForwardConfig = serde_json::from_str(json).expect("deserialization should succeed");
+    let config: PortForwardingConfig = serde_json::from_str(json).expect("deserialization should succeed");
     assert_eq!(config.local_port, "2222");
     assert_eq!(config.name, "metrics-service");
     assert_eq!(config.port, PortValue::Named("prometheus".to_string()));
@@ -213,13 +213,13 @@ fn test_app_config_creation() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![],
+        port_forwarding: vec![],
     };
 
     assert_eq!(config.name, "API");
     assert_eq!(config.description, "BFF Client Portal API");
     assert_eq!(config.manifests_path, "./infrastructure/local/k8s");
-    assert!(config.port_forward.is_empty());
+    assert!(config.port_forwarding.is_empty());
 }
 
 #[test]
@@ -228,7 +228,7 @@ fn test_app_config_validation_success() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![],
+        port_forwarding: vec![],
     };
 
     assert!(config.validate().is_ok());
@@ -240,7 +240,7 @@ fn test_app_config_validation_empty_name() {
         name: "".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![],
+        port_forwarding: vec![],
     };
 
     let result = config.validate();
@@ -258,7 +258,7 @@ fn test_app_config_validation_empty_manifests_path() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "".to_string(),
-        port_forward: vec![],
+        port_forwarding: vec![],
     };
 
     let result = config.validate();
@@ -276,14 +276,14 @@ fn test_app_config_validation_with_port_forward() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![
-            PortForwardConfig {
+        port_forwarding: vec![
+            PortForwardingConfig {
                 local_port: "3333".to_string(),
                 name: "api-service".to_string(),
                 port: PortValue::Numeric(5555),
                 kind: "service".to_string(),
             },
-            PortForwardConfig {
+            PortForwardingConfig {
                 local_port: "2222".to_string(),
                 name: "metrics-service".to_string(),
                 port: PortValue::Named("prometheus".to_string()),
@@ -301,8 +301,8 @@ fn test_app_config_validation_invalid_port_forward() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![
-            PortForwardConfig {
+        port_forwarding: vec![
+            PortForwardingConfig {
                 local_port: "".to_string(), // Invalid
                 name: "api-service".to_string(),
                 port: PortValue::Numeric(5555),
@@ -314,7 +314,7 @@ fn test_app_config_validation_invalid_port_forward() {
     let result = config.validate();
     assert!(result.is_err());
     if let Err(DomainError::AppConfigValidation(msg)) = result {
-        assert!(msg.contains("portForward[0]"));
+        assert!(msg.contains("portForwarding[0]"));
         assert!(msg.contains("localport cannot be empty"));
     } else {
         panic!("Expected AppConfigValidation error");
@@ -328,7 +328,7 @@ fn test_app_config_deserialize_from_json_example() {
             "name": "API",
             "description": "BFF Client Portal API",
             "manifestsPath": "./infrastructure/local/k8s",
-            "portForward": [
+            "portForwarding": [
                 {
                     "localport": "3333",
                     "name": "api-service",
@@ -352,20 +352,20 @@ fn test_app_config_deserialize_from_json_example() {
     assert_eq!(config.name, "API");
     assert_eq!(config.description, "BFF Client Portal API");
     assert_eq!(config.manifests_path, "./infrastructure/local/k8s");
-    assert_eq!(config.port_forward.len(), 2);
+    assert_eq!(config.port_forwarding.len(), 2);
 
-    assert_eq!(config.port_forward[0].local_port, "3333");
-    assert_eq!(config.port_forward[0].name, "api-service");
-    assert_eq!(config.port_forward[0].port, PortValue::Numeric(5555));
-    assert_eq!(config.port_forward[0].kind, "service");
+    assert_eq!(config.port_forwarding[0].local_port, "3333");
+    assert_eq!(config.port_forwarding[0].name, "api-service");
+    assert_eq!(config.port_forwarding[0].port, PortValue::Numeric(5555));
+    assert_eq!(config.port_forwarding[0].kind, "service");
 
-    assert_eq!(config.port_forward[1].local_port, "2222");
-    assert_eq!(config.port_forward[1].name, "metrics-service");
+    assert_eq!(config.port_forwarding[1].local_port, "2222");
+    assert_eq!(config.port_forwarding[1].name, "metrics-service");
     assert_eq!(
-        config.port_forward[1].port,
+        config.port_forwarding[1].port,
         PortValue::Named("prometheus".to_string())
     );
-    assert_eq!(config.port_forward[1].kind, "service");
+    assert_eq!(config.port_forwarding[1].kind, "service");
 }
 
 #[test]
@@ -380,7 +380,7 @@ fn test_app_config_deserialize_without_port_forward() {
     assert_eq!(config.name, "API");
     assert_eq!(config.description, "BFF Client Portal API");
     assert_eq!(config.manifests_path, "./infrastructure/local/k8s");
-    assert!(config.port_forward.is_empty());
+    assert!(config.port_forwarding.is_empty());
 }
 
 #[test]
@@ -389,7 +389,7 @@ fn test_app_config_serialize() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![PortForwardConfig {
+        port_forwarding: vec![PortForwardingConfig {
             local_port: "3333".to_string(),
             name: "api-service".to_string(),
             port: PortValue::Numeric(5555),
@@ -400,7 +400,7 @@ fn test_app_config_serialize() {
     let serialized = serde_json::to_string(&config).expect("serialization should succeed");
     assert!(serialized.contains("\"name\":\"API\""));
     assert!(serialized.contains("\"manifestsPath\":\"./infrastructure/local/k8s\""));
-    assert!(serialized.contains("\"portForward\""));
+    assert!(serialized.contains("\"portForwarding\""));
     assert!(serialized.contains("\"localport\":\"3333\""));
 }
 
@@ -410,14 +410,14 @@ fn test_app_config_round_trip() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forward: vec![
-            PortForwardConfig {
+        port_forwarding: vec![
+            PortForwardingConfig {
                 local_port: "3333".to_string(),
                 name: "api-service".to_string(),
                 port: PortValue::Numeric(5555),
                 kind: "service".to_string(),
             },
-            PortForwardConfig {
+            PortForwardingConfig {
                 local_port: "2222".to_string(),
                 name: "metrics-service".to_string(),
                 port: PortValue::Named("prometheus".to_string()),
@@ -433,9 +433,9 @@ fn test_app_config_round_trip() {
     assert_eq!(original.name, deserialized.name);
     assert_eq!(original.description, deserialized.description);
     assert_eq!(original.manifests_path, deserialized.manifests_path);
-    assert_eq!(original.port_forward.len(), deserialized.port_forward.len());
+    assert_eq!(original.port_forwarding.len(), deserialized.port_forwarding.len());
 
-    for (orig, deser) in original.port_forward.iter().zip(deserialized.port_forward.iter()) {
+    for (orig, deser) in original.port_forwarding.iter().zip(deserialized.port_forwarding.iter()) {
         assert_eq!(orig.local_port, deser.local_port);
         assert_eq!(orig.name, deser.name);
         assert_eq!(orig.port, deser.port);

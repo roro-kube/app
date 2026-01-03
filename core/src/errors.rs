@@ -38,15 +38,15 @@ pub enum CoreError {
     #[error("Context not found: {0}")]
     ContextNotFound(String),
 
-    /// Port forward error
-    #[error("Port forward error: {0}")]
-    PortForward(String),
+    /// Port forwarding error
+    #[error("Port forwarding error: {0}")]
+    PortForwarding(String),
 
     /// Port conflict error
     #[error("Port conflict: port {0} is already in use")]
     PortConflict(u16),
 
-    /// Port forward not found error
-    #[error("Port forward not found: {0}")]
-    PortForwardNotFound(String),
+    /// Port forwarding not found error
+    #[error("Port forwarding not found: {0}")]
+    PortForwardingNotFound(String),
 }

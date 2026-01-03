@@ -12,7 +12,7 @@ type ForwardTaskHandle = (JoinHandle<()>, mpsc::Sender<()>);
 type ForwardTaskMap = Arc<RwLock<HashMap<String, ForwardTaskHandle>>>;
 
 #[derive(Debug, Clone)]
-pub struct PortForwardConfig {
+pub struct PortForwardingConfig {
     pub namespace: String,
     pub pod: String,
     pub remote_port: u16,
@@ -21,7 +21,7 @@ pub struct PortForwardConfig {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum PortForwardStatus {
+pub enum PortForwardingStatus {
     Connecting,
     Active,
     Failed,
@@ -29,16 +29,16 @@ pub enum PortForwardStatus {
 }
 
 #[derive(Debug, Clone)]
-pub struct PortForwardState {
+pub struct PortForwardingState {
     pub id: String,
-    pub config: PortForwardConfig,
-    pub status: PortForwardStatus,
+    pub config: PortForwardingConfig,
+    pub status: PortForwardingStatus,
     pub last_health_check: Option<SystemTime>,
     pub retry_count: u32,
 }
 
-pub struct PortForwardManager {
-    active_forwards: Arc<RwLock<HashMap<String, PortForwardState>>>,
+pub struct PortForwardingManager {
+    active_forwards: Arc<RwLock<HashMap<String, PortForwardingState>>>,
     client: Client,
     health_check_interval: Duration,
     reconnect_delay: Duration,
@@ -46,7 +46,7 @@ pub struct PortForwardManager {
     forward_tasks: ForwardTaskMap,
 }
 
-impl PortForwardManager {
+impl PortForwardingManager {
     #[must_use]
     pub fn new(client: &KubernetesClient) -> Self {
         Self {
@@ -81,7 +81,7 @@ impl PortForwardManager {
     ///
     /// # Errors
     /// Returns an error if the port is already in use or if the forward already exists
-    pub async fn start_forward(&self, config: PortForwardConfig) -> Result<String, CoreError> {
+    pub async fn start_forward(&self, config: PortForwardingConfig) -> Result<String, CoreError> {
         self.check_port_available(config.local_port)?;
 
         let forward_id = format!(
@@ -91,15 +91,15 @@ impl PortForwardManager {
 
         let mut forwards = self.active_forwards.write().await;
         if forwards.contains_key(&forward_id) {
-            return Err(CoreError::PortForward(format!(
+            return Err(CoreError::PortForwarding(format!(
                 "Port forward already exists: {forward_id}"
             )));
         }
 
-        let state = PortForwardState {
+        let state = PortForwardingState {
             id: forward_id.clone(),
             config: config.clone(),
-            status: PortForwardStatus::Connecting,
+            status: PortForwardingStatus::Connecting,
             last_health_check: None,
             retry_count: 0,
         };
@@ -119,7 +119,7 @@ impl PortForwardManager {
     pub async fn stop_forward(&self, forward_id: &str) -> Result<(), CoreError> {
         let mut forwards = self.active_forwards.write().await;
         if !forwards.contains_key(forward_id) {
-            return Err(CoreError::PortForwardNotFound(forward_id.to_string()));
+            return Err(CoreError::PortForwardingNotFound(forward_id.to_string()));
         }
         forwards.remove(forward_id);
         drop(forwards);
@@ -133,17 +133,17 @@ impl PortForwardManager {
         Ok(())
     }
 
-    pub async fn list_forwards(&self) -> Vec<PortForwardState> {
+    pub async fn list_forwards(&self) -> Vec<PortForwardingState> {
         let forwards = self.active_forwards.read().await;
         forwards.values().cloned().collect()
     }
 
-    pub async fn get_forward(&self, forward_id: &str) -> Option<PortForwardState> {
+    pub async fn get_forward(&self, forward_id: &str) -> Option<PortForwardingState> {
         let forwards = self.active_forwards.read().await;
         forwards.get(forward_id).cloned()
     }
 
-    pub async fn list_forwards_by_instance(&self, instance_id: &str) -> Vec<PortForwardState> {
+    pub async fn list_forwards_by_instance(&self, instance_id: &str) -> Vec<PortForwardingState> {
         let forwards = self.active_forwards.read().await;
         forwards
             .values()
@@ -172,7 +172,7 @@ impl PortForwardManager {
                 return Ok(port);
             }
         }
-        Err(CoreError::PortForward(
+        Err(CoreError::PortForwarding(
             "No available ports found".to_string(),
         ))
     }
@@ -188,15 +188,15 @@ impl PortForwardManager {
         };
 
         let state = state.ok_or_else(|| {
-            CoreError::PortForwardNotFound(format!("Forward not found: {forward_id}"))
+            CoreError::PortForwardingNotFound(format!("Forward not found: {forward_id}"))
         })?;
 
         if state.retry_count >= self.max_retries {
             let mut forwards = self.active_forwards.write().await;
             if let Some(s) = forwards.get_mut(forward_id) {
-                s.status = PortForwardStatus::Failed;
+                s.status = PortForwardingStatus::Failed;
             }
-            return Err(CoreError::PortForward(format!(
+            return Err(CoreError::PortForwarding(format!(
                 "Max retries exceeded for {forward_id}"
             )));
         }
@@ -204,7 +204,7 @@ impl PortForwardManager {
         {
             let mut forwards = self.active_forwards.write().await;
             if let Some(s) = forwards.get_mut(forward_id) {
-                s.status = PortForwardStatus::Reconnecting;
+                s.status = PortForwardingStatus::Reconnecting;
                 s.retry_count += 1;
             }
         }
@@ -245,9 +245,9 @@ impl PortForwardManager {
                     let mut f = forwards.write().await;
                     if let Some(state) = f.get_mut(&forward_id) {
                         state.last_health_check = Some(SystemTime::now());
-                        if !is_healthy && state.status == PortForwardStatus::Active {
-                            state.status = PortForwardStatus::Failed;
-                        } else if is_healthy && state.status == PortForwardStatus::Active {
+                        if !is_healthy && state.status == PortForwardingStatus::Active {
+                            state.status = PortForwardingStatus::Failed;
+                        } else if is_healthy && state.status == PortForwardingStatus::Active {
                             state.retry_count = 0;
                         }
                     }
@@ -259,7 +259,7 @@ impl PortForwardManager {
     async fn spawn_forward_task(
         &self,
         forward_id: String,
-        config: PortForwardConfig,
+        config: PortForwardingConfig,
     ) -> Result<(), CoreError> {
         let client = self.client.clone();
         let forwards = Arc::clone(&self.active_forwards);
@@ -276,7 +276,7 @@ impl PortForwardManager {
             let _ = client;
             let _ = &config.namespace;
 
-            let portforward_result: Result<(), CoreError> = Err(CoreError::PortForward(
+            let portforward_result: Result<(), CoreError> = Err(CoreError::PortForwarding(
                 "Port forwarding API not yet implemented".to_string(),
             ));
 
@@ -284,7 +284,7 @@ impl PortForwardManager {
                 {
                     let mut f = forwards.write().await;
                     if let Some(state) = f.get_mut(&forward_id_clone) {
-                        state.status = PortForwardStatus::Active;
+                        state.status = PortForwardingStatus::Active;
                     }
                 }
 
@@ -297,15 +297,15 @@ impl PortForwardManager {
 
                 let mut f = forwards.write().await;
                 if let Some(state) = f.get_mut(&forward_id_clone) {
-                    if state.status == PortForwardStatus::Active {
-                        state.status = PortForwardStatus::Failed;
+                    if state.status == PortForwardingStatus::Active {
+                        state.status = PortForwardingStatus::Failed;
                     }
                 }
             } else {
                 let retry_count = {
                     let mut f = forwards.write().await;
                     if let Some(state) = f.get_mut(&forward_id_clone) {
-                        state.status = PortForwardStatus::Failed;
+                        state.status = PortForwardingStatus::Failed;
                         state.retry_count
                     } else {
                         return;
@@ -334,7 +334,7 @@ impl PortForwardManager {
     }
 
     async fn health_check_forward_internal(
-        forwards: &Arc<RwLock<HashMap<String, PortForwardState>>>,
+        forwards: &Arc<RwLock<HashMap<String, PortForwardingState>>>,
         forward_id: &str,
     ) -> bool {
         let state = {
@@ -343,7 +343,7 @@ impl PortForwardManager {
         };
 
         if let Some(state) = state {
-            if state.status != PortForwardStatus::Active {
+            if state.status != PortForwardingStatus::Active {
                 return false;
             }
 
@@ -356,10 +356,10 @@ impl PortForwardManager {
     }
 
     async fn reconnect_forward_internal(
-        forwards: &Arc<RwLock<HashMap<String, PortForwardState>>>,
+        forwards: &Arc<RwLock<HashMap<String, PortForwardingState>>>,
         tasks: &ForwardTaskMap,
         forward_id: &str,
-        _config: &PortForwardConfig,
+        _config: &PortForwardingConfig,
         reconnect_delay: Duration,
         max_retries: u32,
     ) -> Result<(), CoreError> {
@@ -369,15 +369,15 @@ impl PortForwardManager {
         };
 
         let state = state.ok_or_else(|| {
-            CoreError::PortForwardNotFound(format!("Forward not found: {forward_id}"))
+            CoreError::PortForwardingNotFound(format!("Forward not found: {forward_id}"))
         })?;
 
         if state.retry_count >= max_retries {
             let mut f = forwards.write().await;
             if let Some(s) = f.get_mut(forward_id) {
-                s.status = PortForwardStatus::Failed;
+                s.status = PortForwardingStatus::Failed;
             }
-            return Err(CoreError::PortForward(format!(
+            return Err(CoreError::PortForwarding(format!(
                 "Max retries exceeded for {forward_id}"
             )));
         }
@@ -385,7 +385,7 @@ impl PortForwardManager {
         {
             let mut f = forwards.write().await;
             if let Some(s) = f.get_mut(forward_id) {
-                s.status = PortForwardStatus::Reconnecting;
+                s.status = PortForwardingStatus::Reconnecting;
                 s.retry_count += 1;
             }
         }

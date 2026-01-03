@@ -203,7 +203,7 @@ Roro Kube is a **"Docker Compose for Kubernetes"** - a local-first desktop appli
 
 **Reconciliation Engine**
 - Compare desired state (from Git) vs current state (from cluster)
-- Generate reconciliation actions (Create, Update, Delete, PortForward)
+- Generate reconciliation actions (Create, Update, Delete, PortForwarding)
 - Execute reconciliation pipeline
 - Error handling and reporting
 

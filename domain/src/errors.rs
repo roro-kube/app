@@ -30,7 +30,7 @@ pub enum DomainError {
     #[error("App config validation error: {0}")]
     AppConfigValidation(String),
 
-    /// Port forward configuration validation failed
-    #[error("Port forward config validation error: {0}")]
-    PortForwardValidation(String),
+    /// Port forwarding configuration validation failed
+    #[error("Port forwarding config validation error: {0}")]
+    PortForwardingValidation(String),
 }

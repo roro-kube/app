@@ -10,6 +10,6 @@ pub use errors::DomainError;
 pub use handlers::{HandlerRegistry, OperationHandler};
 pub use processor::DomainProcessor;
 pub use types::{
-    AppConfig, DomainEntity, EntityState, PortForwardConfig, PortValue, ProcessingContext,
+    AppConfig, DomainEntity, EntityState, PortForwardingConfig, PortValue, ProcessingContext,
     ProcessingResult,
 };

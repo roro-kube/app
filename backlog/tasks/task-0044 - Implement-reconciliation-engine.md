@@ -18,7 +18,7 @@ priority: high
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Implement reconciliation engine that loads desired state from Git config, detects current state from Kubernetes cluster, compares states, and generates actions (Create, Update, Delete, PortForward).
+Implement reconciliation engine that loads desired state from Git config, detects current state from Kubernetes cluster, compares states, and generates actions (Create, Update, Delete, PortForwarding).
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -26,7 +26,7 @@ Implement reconciliation engine that loads desired state from Git config, detect
 - [ ] #1 Desired state loading (from Git config) implemented
 - [ ] #2 Current state detection (from Kubernetes cluster) implemented
 - [ ] #3 State comparison logic implemented
-- [ ] #4 Action generation (Create, Update, Delete, PortForward) implemented
+- [ ] #4 Action generation (Create, Update, Delete, PortForwarding) implemented
 - [ ] #5 Unit tests verify reconciliation engine
 <!-- AC:END -->
 

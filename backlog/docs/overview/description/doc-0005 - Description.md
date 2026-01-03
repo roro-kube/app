@@ -106,7 +106,7 @@ Workspace-based approach similar to Cargo workspaces:
         "name": "API",
         "description": "BFF Client Portal API",
         "manifestsPath": "./infrastructure/local/k8s",
-        "portForward": [
+        "portForwarding": [
             {
                 "localport": "3333",
                 "name": "api-service",

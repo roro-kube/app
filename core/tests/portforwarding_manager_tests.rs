@@ -1,14 +1,14 @@
 use roro_core::api::kubernetes::{
-    portforward::{PortForwardConfig, PortForwardManager, PortForwardStatus},
+    portforwarding::{PortForwardingConfig, PortForwardingManager, PortForwardingStatus},
     KubernetesClient,
 };
 use roro_core::errors::CoreError;
 use std::time::Duration;
 
-async fn create_test_manager() -> PortForwardManager {
+async fn create_test_manager() -> PortForwardingManager {
     let client = KubernetesClient::new().await;
     match client {
-        Ok(c) => PortForwardManager::new(&c),
+        Ok(c) => PortForwardingManager::new(&c),
         Err(_) => {
             panic!("Failed to create Kubernetes client for tests");
         }
@@ -18,7 +18,7 @@ async fn create_test_manager() -> PortForwardManager {
 #[tokio::test]
 async fn test_port_forward_creation() {
     let manager = create_test_manager().await;
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod".to_string(),
         remote_port: 8080,
@@ -39,7 +39,7 @@ async fn test_port_forward_creation() {
             assert_eq!(state.config.remote_port, 8080);
         }
         Err(e) => match e {
-            CoreError::Kubernetes(_) | CoreError::PortForward(_) => {}
+            CoreError::Kubernetes(_) | CoreError::PortForwarding(_) => {}
             _ => panic!("Unexpected error: {e}"),
         },
     }
@@ -82,7 +82,7 @@ async fn test_find_available_port() {
 async fn test_multiple_ports_per_instance() {
     let manager = create_test_manager().await;
 
-    let config1 = PortForwardConfig {
+    let config1 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-1".to_string(),
         remote_port: 8080,
@@ -90,7 +90,7 @@ async fn test_multiple_ports_per_instance() {
         instance_id: "test-instance".to_string(),
     };
 
-    let config2 = PortForwardConfig {
+    let config2 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-2".to_string(),
         remote_port: 8081,
@@ -125,7 +125,7 @@ async fn test_multiple_ports_per_instance() {
 async fn test_stop_forward() {
     let manager = create_test_manager().await;
 
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod".to_string(),
         remote_port: 8080,
@@ -145,8 +145,8 @@ async fn test_stop_forward() {
         let stop_again = manager.stop_forward(&forward_id).await;
         assert!(stop_again.is_err());
         match stop_again {
-            Err(CoreError::PortForwardNotFound(_)) => {}
-            _ => panic!("Expected PortForwardNotFound error"),
+            Err(CoreError::PortForwardingNotFound(_)) => {}
+            _ => panic!("Expected PortForwardingNotFound error"),
         }
     }
 }
@@ -155,7 +155,7 @@ async fn test_stop_forward() {
 async fn test_list_forwards() {
     let manager = create_test_manager().await;
 
-    let config1 = PortForwardConfig {
+    let config1 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-1".to_string(),
         remote_port: 8080,
@@ -163,7 +163,7 @@ async fn test_list_forwards() {
         instance_id: "test-instance-1".to_string(),
     };
 
-    let config2 = PortForwardConfig {
+    let config2 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-2".to_string(),
         remote_port: 8081,
@@ -182,7 +182,7 @@ async fn test_list_forwards() {
 async fn test_list_forwards_by_instance() {
     let manager = create_test_manager().await;
 
-    let config1 = PortForwardConfig {
+    let config1 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-1".to_string(),
         remote_port: 8080,
@@ -190,7 +190,7 @@ async fn test_list_forwards_by_instance() {
         instance_id: "instance-a".to_string(),
     };
 
-    let config2 = PortForwardConfig {
+    let config2 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-2".to_string(),
         remote_port: 8081,
@@ -198,7 +198,7 @@ async fn test_list_forwards_by_instance() {
         instance_id: "instance-a".to_string(),
     };
 
-    let config3 = PortForwardConfig {
+    let config3 = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod-3".to_string(),
         remote_port: 8082,
@@ -229,7 +229,7 @@ async fn test_list_forwards_by_instance() {
 async fn test_get_forward() {
     let manager = create_test_manager().await;
 
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod".to_string(),
         remote_port: 8080,
@@ -256,7 +256,7 @@ async fn test_get_forward() {
 async fn test_duplicate_forward_id() {
     let manager = create_test_manager().await;
 
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod".to_string(),
         remote_port: 8080,
@@ -270,8 +270,8 @@ async fn test_duplicate_forward_id() {
         let result2 = manager.start_forward(config).await;
         assert!(result2.is_err());
         match result2 {
-            Err(CoreError::PortForward(_)) => {}
-            _ => panic!("Expected PortForward error for duplicate"),
+            Err(CoreError::PortForwarding(_)) => {}
+            _ => panic!("Expected PortForwarding error for duplicate"),
         }
     }
 }
@@ -289,7 +289,7 @@ async fn test_health_monitoring_start() {
 async fn test_reconnect_forward() {
     let manager = create_test_manager().await;
 
-    let config = PortForwardConfig {
+    let config = PortForwardingConfig {
         namespace: "default".to_string(),
         pod: "test-pod".to_string(),
         remote_port: 8080,
@@ -305,7 +305,7 @@ async fn test_reconnect_forward() {
         match reconnect_result {
             Ok(_) => {}
             Err(e) => match e {
-                CoreError::PortForward(_) | CoreError::Kubernetes(_) => {}
+                CoreError::PortForwarding(_) | CoreError::Kubernetes(_) => {}
                 _ => panic!("Unexpected error: {e}"),
             },
         }
@@ -319,8 +319,8 @@ async fn test_reconnect_non_existent_forward() {
     let result = manager.reconnect_forward("non-existent-id").await;
     assert!(result.is_err());
     match result {
-        Err(CoreError::PortForwardNotFound(_)) => {}
-        _ => panic!("Expected PortForwardNotFound error"),
+        Err(CoreError::PortForwardingNotFound(_)) => {}
+        _ => panic!("Expected PortForwardingNotFound error"),
     }
 }
 
@@ -328,12 +328,12 @@ async fn test_reconnect_non_existent_forward() {
 async fn test_manager_configuration() {
     let client = KubernetesClient::new().await;
     if let Ok(c) = client {
-        let manager = PortForwardManager::new(&c)
+        let manager = PortForwardingManager::new(&c)
             .with_health_check_interval(Duration::from_secs(60))
             .with_reconnect_delay(Duration::from_secs(10))
             .with_max_retries(10);
 
-        let config = PortForwardConfig {
+        let config = PortForwardingConfig {
             namespace: "default".to_string(),
             pod: "test-pod".to_string(),
             remote_port: 8080,

@@ -1,7 +1,7 @@
 pub mod client;
 pub mod context;
-pub mod portforward;
+pub mod portforwarding;
 
 pub use client::KubernetesClient;
 pub use context::ContextManager;
-pub use portforward::{PortForwardConfig, PortForwardManager, PortForwardState, PortForwardStatus};
+pub use portforwarding::{PortForwardingConfig, PortForwardingManager, PortForwardingState, PortForwardingStatus};

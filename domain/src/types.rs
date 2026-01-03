@@ -92,7 +92,7 @@ impl<'de> Deserialize<'de> for PortValue {
 
 /// Port forwarding configuration for a Kubernetes service
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PortForwardConfig {
+pub struct PortForwardingConfig {
     /// Local port to forward to
     #[serde(rename = "localport")]
     pub local_port: String,
@@ -104,15 +104,15 @@ pub struct PortForwardConfig {
     pub kind: String,
 }
 
-impl PortForwardConfig {
-    /// Validate the port forward configuration
+impl PortForwardingConfig {
+    /// Validate the port forwarding configuration
     ///
     /// # Errors
-    /// Returns `DomainError::PortForwardValidation` if validation fails
+    /// Returns `DomainError::PortForwardingValidation` if validation fails
     pub fn validate(&self) -> Result<(), DomainError> {
         // Validate local_port is not empty
         if self.local_port.is_empty() {
-            return Err(DomainError::PortForwardValidation(
+            return Err(DomainError::PortForwardingValidation(
                 "localport cannot be empty".to_string(),
             ));
         }
@@ -120,12 +120,12 @@ impl PortForwardConfig {
         // Validate local_port is a valid port number if it's numeric
         if let Ok(port_num) = self.local_port.parse::<u16>() {
             if port_num == 0 {
-                return Err(DomainError::PortForwardValidation(
+                return Err(DomainError::PortForwardingValidation(
                     "localport cannot be 0".to_string(),
                 ));
             }
         } else {
-            return Err(DomainError::PortForwardValidation(format!(
+            return Err(DomainError::PortForwardingValidation(format!(
                 "localport '{}' must be a valid port number (1-65535)",
                 self.local_port
             )));
@@ -133,14 +133,14 @@ impl PortForwardConfig {
 
         // Validate name is not empty
         if self.name.is_empty() {
-            return Err(DomainError::PortForwardValidation(
+            return Err(DomainError::PortForwardingValidation(
                 "name cannot be empty".to_string(),
             ));
         }
 
         // Validate kind is not empty
         if self.kind.is_empty() {
-            return Err(DomainError::PortForwardValidation(
+            return Err(DomainError::PortForwardingValidation(
                 "kind cannot be empty".to_string(),
             ));
         }
@@ -161,8 +161,8 @@ pub struct AppConfig {
     #[serde(rename = "manifestsPath")]
     pub manifests_path: String,
     /// Port forwarding configurations for this app
-    #[serde(rename = "portForward", default)]
-    pub port_forward: Vec<PortForwardConfig>,
+    #[serde(rename = "portForwarding", default)]
+    pub port_forwarding: Vec<PortForwardingConfig>,
 }
 
 impl AppConfig {
@@ -185,14 +185,14 @@ impl AppConfig {
             ));
         }
 
-        // Validate all port forward configurations
-        for (index, pf) in self.port_forward.iter().enumerate() {
+        // Validate all port forwarding configurations
+        for (index, pf) in self.port_forwarding.iter().enumerate() {
             pf.validate().map_err(|e| {
                 DomainError::AppConfigValidation(format!(
-                    "portForward[{}]: {}",
+                    "portForwarding[{}]: {}",
                     index,
                     match e {
-                        DomainError::PortForwardValidation(msg) => msg,
+                        DomainError::PortForwardingValidation(msg) => msg,
                         _ => "validation failed".to_string(),
                     }
                 ))
