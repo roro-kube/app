@@ -39,8 +39,8 @@ impl Command for SyncCommand {
             .iter()
             .find(|app| app.name == self.app_name)
             .ok_or_else(|| {
-                let config_path = get_config_path_string()
-                    .unwrap_or_else(|_| "~/.roro/config.json".to_string());
+                let config_path =
+                    get_config_path_string().unwrap_or_else(|_| "~/.roro/config.json".to_string());
                 format!(
                     "App '{}' not found in workstation configuration (config file: {})",
                     self.app_name, config_path
@@ -54,15 +54,17 @@ impl Command for SyncCommand {
         sync_repository(&app_reference.git_url, &local_path, None)
             .await
             .map_err(|e| match e {
-                PersistenceError::Network(msg) => format!("Network error: {}", msg),
-                PersistenceError::Authentication(msg) => format!("Authentication error: {}", msg),
-                PersistenceError::Git(msg) => format!("Git error: {}", msg),
-                _ => format!("Error: {}", e),
+                PersistenceError::Network(msg) => format!("Network error: {msg}"),
+                PersistenceError::Authentication(msg) => format!("Authentication error: {msg}"),
+                PersistenceError::Git(msg) => format!("Git error: {msg}"),
+                _ => format!("Error: {e}"),
             })?;
 
         println!(
-            "Successfully synced repository '{}' from {} to {:?}",
-            self.app_name, app_reference.git_url, local_path
+            "Successfully synced repository '{}' from {} to {}",
+            self.app_name,
+            app_reference.git_url,
+            local_path.display()
         );
         Ok(())
     }

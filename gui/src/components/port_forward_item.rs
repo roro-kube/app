@@ -91,7 +91,7 @@ pub fn PortForwardItem(props: PortForwardItemProps) -> Element {
 
                                 // Check status immediately after starting using the same manager
                                 let id_for_status = id.clone();
-                                let mut status_for_check = status.clone();
+                                let mut status_for_check = status;
                                 // Use the same manager instance to check status
                                 if let Some(state) = manager.get_forward(&id_for_status).await {
                                     println!(

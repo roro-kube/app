@@ -135,9 +135,9 @@ fn PodPortButton(props: PodPortButtonProps) -> Element {
     let instance_id = format!("{}-{}", props.namespace, props.pod_name);
 
     let handle_start = {
-        let mut forward_id = forward_id.clone();
-        let mut status = status.clone();
-        let mut error = error.clone();
+        let mut forward_id = forward_id;
+        let mut status = status;
+        let mut error = error;
         let namespace = namespace.clone();
         let pod_name = pod_name.clone();
         let instance_id = instance_id.clone();
@@ -182,9 +182,9 @@ fn PodPortButton(props: PodPortButtonProps) -> Element {
     };
 
     let handle_stop = {
-        let mut forward_id = forward_id.clone();
-        let mut status = status.clone();
-        let mut error = error.clone();
+        let mut forward_id = forward_id;
+        let mut status = status;
+        let mut error = error;
         move |_| {
             let forward_id_val = forward_id.read().clone();
             spawn(async move {
@@ -220,7 +220,6 @@ fn PodPortButton(props: PodPortButtonProps) -> Element {
     });
 
     let handle_open_browser = {
-        let local_port = local_port;
         move |_| {
             let url = format!("http://localhost:{local_port}");
             #[cfg(target_os = "windows")]

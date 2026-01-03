@@ -29,6 +29,7 @@ pedantic = "warn"
 cognitive_complexity = "warn"
 type_complexity = "warn"
 # Correctness - catch bugs
+# Note: unwrap_used and expect_used are allowed in test code via cfg_attr
 unwrap_used = "warn"
 expect_used = "warn"
 unwrap_in_result = "warn"

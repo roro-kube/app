@@ -68,36 +68,36 @@ async fn test_singleton_initialize_double_initialization() {
 
     if let Ok(client) = client_result {
         // First initialization
-            let first_result = initialize(&client);
+        let first_result = initialize(&client);
 
-            // Second initialization should fail
-            let second_result = initialize(&client);
+        // Second initialization should fail
+        let second_result = initialize(&client);
 
-            match (first_result, second_result) {
-                (Ok(()), Err(e)) => {
-                    // Expected: first succeeds, second fails
-                    match e {
-                        CoreError::PortForwarding(msg) => {
-                            assert!(msg.contains("already initialized"));
-                        }
-                        _ => panic!("Unexpected error type: {e}"),
+        match (first_result, second_result) {
+            (Ok(()), Err(e)) => {
+                // Expected: first succeeds, second fails
+                match e {
+                    CoreError::PortForwarding(msg) => {
+                        assert!(msg.contains("already initialized"));
                     }
-                }
-                (Err(e1), Err(e2)) => {
-                    // Both failed - singleton was already initialized by another test
-                    // This is acceptable
-                    match (&e1, &e2) {
-                        (CoreError::PortForwarding(_), CoreError::PortForwarding(_)) => {}
-                        _ => panic!("Unexpected error types: {e1}, {e2}"),
-                    }
-                }
-                (Ok(()), Ok(())) => {
-                    panic!("Second initialization should have failed");
-                }
-                (Err(_), Ok(())) => {
-                    panic!("First initialization failed but second succeeded - unexpected");
+                    _ => panic!("Unexpected error type: {e}"),
                 }
             }
+            (Err(e1), Err(e2)) => {
+                // Both failed - singleton was already initialized by another test
+                // This is acceptable
+                match (&e1, &e2) {
+                    (CoreError::PortForwarding(_), CoreError::PortForwarding(_)) => {}
+                    _ => panic!("Unexpected error types: {e1}, {e2}"),
+                }
+            }
+            (Ok(()), Ok(())) => {
+                panic!("Second initialization should have failed");
+            }
+            (Err(_), Ok(())) => {
+                panic!("First initialization failed but second succeeded - unexpected");
+            }
+        }
         // Kubernetes client creation failed - skip this test
         // This is acceptable if kubeconfig is not available
     }
@@ -108,18 +108,17 @@ async fn test_singleton_get_after_initialization() {
     let client_result = create_test_client().await;
 
     if let Ok(client) = client_result {
-        Ok(client) => {
-            // Try to initialize (may fail if already initialized)
-            let _ = initialize(&client);
+        // Try to initialize (may fail if already initialized)
+        let _ = initialize(&client);
 
-            // Now get should return Some
-            let manager = get();
-            assert!(manager.is_some());
+        // Now get should return Some
+        let manager = get();
+        assert!(manager.is_some());
 
-            // Verify we can use the manager
-            if let Some(manager_arc) = manager {
-                let _ = manager_arc.list_forwards().await;
-            }
+        // Verify we can use the manager
+        if let Some(manager_arc) = manager {
+            let _ = manager_arc.list_forwards().await;
+        }
         // Kubernetes client creation failed - skip this test
         // This is acceptable if kubeconfig is not available
     }
@@ -161,41 +160,38 @@ async fn test_singleton_get_or_init_returns_existing() {
 
     if let Ok(client) = client_result {
         // Initialize first (may fail if already initialized)
-            let _ = initialize(&client);
+        let _ = initialize(&client);
 
-            // Now get_or_init should return the existing instance
-            let result1 = get_or_init("rancher-desktop").await;
-            let result2 = get_or_init("rancher-desktop").await;
+        // Now get_or_init should return the existing instance
+        let result1 = get_or_init("rancher-desktop").await;
+        let result2 = get_or_init("rancher-desktop").await;
 
-            match (result1, result2) {
-                (Ok(manager1), Ok(manager2)) => {
-                    // Both should return the same Arc (same pointer)
-                    assert!(Arc::ptr_eq(&manager1, &manager2));
-                }
-                (Err(e1), Err(e2)) => {
-                    // Both failed - may be due to kubeconfig issues
-                    match (&e1, &e2) {
-                        (
-                            CoreError::Kubeconfig(_)
-                            | CoreError::ContextNotFound(_)
-                            | CoreError::Kubernetes(_),
-                            CoreError::Kubeconfig(_)
-                            | CoreError::ContextNotFound(_)
-                            | CoreError::Kubernetes(_),
-                        ) => {}
-                        _ => panic!("Unexpected error types: {e1}, {e2}"),
-                    }
-                }
-                _ => {
-                    // Mixed results - acceptable if singleton state is inconsistent
-                    // This can happen due to test execution order
+        match (result1, result2) {
+            (Ok(manager1), Ok(manager2)) => {
+                // Both should return the same Arc (same pointer)
+                assert!(Arc::ptr_eq(&manager1, &manager2));
+            }
+            (Err(e1), Err(e2)) => {
+                // Both failed - may be due to kubeconfig issues
+                match (&e1, &e2) {
+                    (
+                        CoreError::Kubeconfig(_)
+                        | CoreError::ContextNotFound(_)
+                        | CoreError::Kubernetes(_),
+                        CoreError::Kubeconfig(_)
+                        | CoreError::ContextNotFound(_)
+                        | CoreError::Kubernetes(_),
+                    ) => {}
+                    _ => panic!("Unexpected error types: {e1}, {e2}"),
                 }
             }
+            _ => {
+                // Mixed results - acceptable if singleton state is inconsistent
+                // This can happen due to test execution order
+            }
         }
-        Err(_) => {
-            // Kubernetes client creation failed - skip this test
-            // This is acceptable if kubeconfig is not available
-        }
+        // Kubernetes client creation failed - skip this test
+        // This is acceptable if kubeconfig is not available
     }
 }
 
@@ -229,29 +225,26 @@ async fn test_singleton_is_initialized_true() {
 
     if let Ok(client) = client_result {
         // Initialize the singleton
-            let init_result = initialize(&client);
+        let init_result = initialize(&client);
 
-            match init_result {
-                Ok(()) => {
-                    // Now is_initialized should return true
-                    assert!(is_initialized());
-                }
-                Err(e) => {
-                    // Already initialized by another test
-                    match e {
-                        CoreError::PortForwarding(msg) => {
-                            assert!(msg.contains("already initialized"));
-                            // In this case, it should still be initialized
-                            assert!(is_initialized());
-                        }
-                        _ => panic!("Unexpected error type: {e}"),
+        match init_result {
+            Ok(()) => {
+                // Now is_initialized should return true
+                assert!(is_initialized());
+            }
+            Err(e) => {
+                // Already initialized by another test
+                match e {
+                    CoreError::PortForwarding(msg) => {
+                        assert!(msg.contains("already initialized"));
+                        // In this case, it should still be initialized
+                        assert!(is_initialized());
                     }
+                    _ => panic!("Unexpected error type: {e}"),
                 }
             }
         }
-        Err(_) => {
-            // Kubernetes client creation failed - skip this test
-            // This is acceptable if kubeconfig is not available
-        }
+        // Kubernetes client creation failed - skip this test
+        // This is acceptable if kubeconfig is not available
     }
 }

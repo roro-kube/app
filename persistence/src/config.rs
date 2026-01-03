@@ -57,41 +57,32 @@ pub async fn load_workstation_config() -> Result<WorkstationConfig, PersistenceE
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
             // Config file doesn't exist, initialize it with an empty array
             let roro_dir = config_path.parent().ok_or_else(|| {
-                PersistenceError::InvalidInput(
-                    "Cannot determine config directory".to_string(),
-                )
+                PersistenceError::InvalidInput("Cannot determine config directory".to_string())
             })?;
 
             // Ensure ~/.roro directory exists
-            fs::create_dir_all(roro_dir)
-                .await
-                .map_err(|e| {
-                    PersistenceError::Serialization(format!(
-                        "Failed to create directory {}: {}",
-                        roro_dir.display(),
-                        e
-                    ))
-                })?;
-
-            // Initialize with empty array (empty WorkstationConfig)
-            let empty_config: WorkstationConfig = Vec::new();
-            let json_content = serde_json::to_string_pretty(&empty_config).map_err(|e| {
+            fs::create_dir_all(roro_dir).await.map_err(|e| {
                 PersistenceError::Serialization(format!(
-                    "Failed to serialize empty config: {}",
+                    "Failed to create directory {}: {}",
+                    roro_dir.display(),
                     e
                 ))
             })?;
 
+            // Initialize with empty array (empty WorkstationConfig)
+            let empty_config: WorkstationConfig = Vec::new();
+            let json_content = serde_json::to_string_pretty(&empty_config).map_err(|e| {
+                PersistenceError::Serialization(format!("Failed to serialize empty config: {e}"))
+            })?;
+
             // Write the empty config file
-            fs::write(&config_path, json_content)
-                .await
-                .map_err(|e| {
-                    PersistenceError::Serialization(format!(
-                        "Failed to write configuration file {}: {}",
-                        config_path.display(),
-                        e
-                    ))
-                })?;
+            fs::write(&config_path, json_content).await.map_err(|e| {
+                PersistenceError::Serialization(format!(
+                    "Failed to write configuration file {}: {}",
+                    config_path.display(),
+                    e
+                ))
+            })?;
 
             // Return the empty config
             return Ok(empty_config);
@@ -115,4 +106,3 @@ pub async fn load_workstation_config() -> Result<WorkstationConfig, PersistenceE
 
     Ok(config)
 }
-

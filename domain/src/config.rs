@@ -50,6 +50,7 @@ impl AppReference {
     }
 
     /// Get the resolved sync interval, defaulting to 300 milliseconds if not specified
+    #[must_use]
     pub fn get_sync_interval(&self) -> u64 {
         self.sync_interval.unwrap_or(300)
     }
@@ -59,4 +60,3 @@ impl AppReference {
 ///
 /// Represents the entire configuration array from ~/.roro/config.json
 pub type WorkstationConfig = Vec<AppReference>;
-

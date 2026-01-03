@@ -2,7 +2,10 @@
 //
 // Tests for AppConfig, PortForwardingConfig, and PortValue.
 
-#![allow(clippy::expect_used, clippy::manual_string_new)]
+#![cfg_attr(
+    test,
+    allow(clippy::expect_used, clippy::unwrap_used, clippy::manual_string_new)
+)]
 
 use roro_domain::{AppConfig, DomainError, PortForwardingConfig, PortValue};
 
