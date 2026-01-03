@@ -12,6 +12,7 @@ path = "src/main.rs"
 roro_core = { path = "../core" }
 dioxus = { version = "0.7", features = ["desktop"] }
 image = "0.24"
+k8s-openapi = { version = "0.26", features = ["v1_30"] }
 
 [lints]
 workspace = true

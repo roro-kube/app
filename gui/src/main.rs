@@ -1,4 +1,15 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
+#![allow(
+    clippy::uninlined_format_args,
+    clippy::too_many_lines,
+    clippy::redundant_clone,
+    clippy::cast_possible_truncation,
+    clippy::cast_lossless,
+    clippy::needless_pass_by_value,
+    clippy::trivially_copy_pass_by_ref,
+    clippy::unnested_or_patterns,
+    dead_code
+)]
 
 /// GUI Application Layer Entry Point
 ///
@@ -13,8 +24,8 @@ mod icons;
 mod layout;
 mod pages;
 
-use components::Greeting;
 use dioxus::prelude::*;
+use pages::Home;
 
 fn main() {
     // Launch Dioxus desktop application
@@ -45,6 +56,6 @@ fn App() -> Element {
 
     rsx! {
         document::Stylesheet { href: asset!("/assets/tailwind.css") }
-        Greeting {}
+        Home {}
     }
 }

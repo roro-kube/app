@@ -2,6 +2,8 @@
 //
 // Tests for AppConfig, PortForwardingConfig, and PortValue.
 
+#![allow(clippy::expect_used, clippy::manual_string_new)]
+
 use roro_domain::{AppConfig, DomainError, PortForwardingConfig, PortValue};
 
 #[test]
@@ -184,7 +186,8 @@ fn test_port_forward_config_deserialize_from_json() {
         "kind": "service"
     }"#;
 
-    let config: PortForwardingConfig = serde_json::from_str(json).expect("deserialization should succeed");
+    let config: PortForwardingConfig =
+        serde_json::from_str(json).expect("deserialization should succeed");
     assert_eq!(config.local_port, "3333");
     assert_eq!(config.name, "api-service");
     assert_eq!(config.port, PortValue::Numeric(5555));
@@ -200,7 +203,8 @@ fn test_port_forward_config_deserialize_named_port() {
         "kind": "service"
     }"#;
 
-    let config: PortForwardingConfig = serde_json::from_str(json).expect("deserialization should succeed");
+    let config: PortForwardingConfig =
+        serde_json::from_str(json).expect("deserialization should succeed");
     assert_eq!(config.local_port, "2222");
     assert_eq!(config.name, "metrics-service");
     assert_eq!(config.port, PortValue::Named("prometheus".to_string()));
@@ -301,14 +305,12 @@ fn test_app_config_validation_invalid_port_forward() {
         name: "API".to_string(),
         description: "BFF Client Portal API".to_string(),
         manifests_path: "./infrastructure/local/k8s".to_string(),
-        port_forwarding: vec![
-            PortForwardingConfig {
-                local_port: "".to_string(), // Invalid
-                name: "api-service".to_string(),
-                port: PortValue::Numeric(5555),
-                kind: "service".to_string(),
-            },
-        ],
+        port_forwarding: vec![PortForwardingConfig {
+            local_port: "".to_string(), // Invalid
+            name: "api-service".to_string(),
+            port: PortValue::Numeric(5555),
+            kind: "service".to_string(),
+        }],
     };
 
     let result = config.validate();
@@ -345,7 +347,8 @@ fn test_app_config_deserialize_from_json_example() {
         }
     ]"#;
 
-    let configs: Vec<AppConfig> = serde_json::from_str(json).expect("deserialization should succeed");
+    let configs: Vec<AppConfig> =
+        serde_json::from_str(json).expect("deserialization should succeed");
     assert_eq!(configs.len(), 1);
 
     let config = &configs[0];
@@ -433,13 +436,19 @@ fn test_app_config_round_trip() {
     assert_eq!(original.name, deserialized.name);
     assert_eq!(original.description, deserialized.description);
     assert_eq!(original.manifests_path, deserialized.manifests_path);
-    assert_eq!(original.port_forwarding.len(), deserialized.port_forwarding.len());
+    assert_eq!(
+        original.port_forwarding.len(),
+        deserialized.port_forwarding.len()
+    );
 
-    for (orig, deser) in original.port_forwarding.iter().zip(deserialized.port_forwarding.iter()) {
+    for (orig, deser) in original
+        .port_forwarding
+        .iter()
+        .zip(deserialized.port_forwarding.iter())
+    {
         assert_eq!(orig.local_port, deser.local_port);
         assert_eq!(orig.name, deser.name);
         assert_eq!(orig.port, deser.port);
         assert_eq!(orig.kind, deser.kind);
     }
 }
-

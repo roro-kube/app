@@ -70,13 +70,13 @@ impl<'de> Deserialize<'de> for PortValue {
         match value {
             Value::Number(n) => {
                 if let Some(u) = n.as_u64() {
-                    if u <= u16::MAX as u64 {
-                        Ok(PortValue::Numeric(u as u16))
-                    } else {
-                        Err(serde::de::Error::custom(format!(
+                    match u16::try_from(u) {
+                        Ok(port) => Ok(PortValue::Numeric(port)),
+                        Err(_) => Err(serde::de::Error::custom(format!(
                             "Port number {} exceeds maximum value {}",
-                            u, u16::MAX
-                        )))
+                            u,
+                            u16::MAX
+                        ))),
                     }
                 } else {
                     Err(serde::de::Error::custom("Port number must be a valid u16"))

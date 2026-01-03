@@ -1,5 +1,5 @@
 use roro_core::api::kubernetes::{
-    portforwarding::{PortForwardingConfig, PortForwardingManager, PortForwardingStatus},
+    portforwarding::{PortForwardingConfig, PortForwardingManager},
     KubernetesClient,
 };
 use roro_core::errors::CoreError;
@@ -110,14 +110,14 @@ async fn test_multiple_ports_per_instance() {
         let forwards = manager.list_forwards_by_instance("test-instance").await;
         assert!(forwards.len() >= 2);
 
-        let forward1 = manager.get_forward(&forward_id1).await;
-        let forward2 = manager.get_forward(&forward_id2).await;
+        let fwd1 = manager.get_forward(&forward_id1).await;
+        let fwd2 = manager.get_forward(&forward_id2).await;
 
-        assert!(forward1.is_some());
-        assert!(forward2.is_some());
+        assert!(fwd1.is_some());
+        assert!(fwd2.is_some());
 
-        assert_eq!(forward1.unwrap().config.instance_id, "test-instance");
-        assert_eq!(forward2.unwrap().config.instance_id, "test-instance");
+        assert_eq!(fwd1.unwrap().config.instance_id, "test-instance");
+        assert_eq!(fwd2.unwrap().config.instance_id, "test-instance");
     }
 }
 
@@ -217,10 +217,10 @@ async fn test_list_forwards_by_instance() {
         assert_eq!(forward.config.instance_id, "instance-a");
     }
 
-    let instance_b_forwards = manager.list_forwards_by_instance("instance-b").await;
-    assert!(instance_b_forwards.len() >= 1);
+    let instance_b_list = manager.list_forwards_by_instance("instance-b").await;
+    assert!(instance_b_list.len() >= 1);
 
-    for forward in &instance_b_forwards {
+    for forward in &instance_b_list {
         assert_eq!(forward.config.instance_id, "instance-b");
     }
 }

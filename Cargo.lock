@@ -2541,6 +2541,7 @@ dependencies = [
  "serde_yaml",
  "thiserror 2.0.17",
  "tokio",
+ "tokio-tungstenite",
  "tokio-util",
  "tower",
  "tower-http",
@@ -4008,6 +4009,7 @@ version = "0.1.0"
 dependencies = [
  "dioxus",
  "image",
+ "k8s-openapi",
  "roro_core",
 ]
 
@@ -4880,6 +4882,18 @@ checksum = "1729aa945f29d91ba541258c8df89027d5792d85a8841fb65e8bf0f4ede4ef61"
 dependencies = [
  "rustls",
  "tokio",
+]
+
+[[package]]
+name = "tokio-tungstenite"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "489a59b6730eda1b0171fcfda8b121f4bee2b35cba8645ca35c5f7ba3eb736c1"
+dependencies = [
+ "futures-util",
+ "log",
+ "tokio",
+ "tungstenite",
 ]
 
 [[package]]

@@ -3,6 +3,13 @@
 // This module will contain reusable Dioxus UI components.
 // Components will be added in future tasks.
 
+mod pod_list;
+mod port_forward_item;
+
+pub use pod_list::PodList;
+#[allow(unused_imports)]
+pub use port_forward_item::PortForwardItem;
+
 use dioxus::prelude::*;
 
 /// Simple greeting component that displays a welcome message
