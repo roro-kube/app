@@ -9,4 +9,7 @@ pub mod types;
 pub use errors::DomainError;
 pub use handlers::{HandlerRegistry, OperationHandler};
 pub use processor::DomainProcessor;
-pub use types::{DomainEntity, EntityState, ProcessingContext, ProcessingResult};
+pub use types::{
+    AppConfig, DomainEntity, EntityState, PortForwardConfig, PortValue, ProcessingContext,
+    ProcessingResult,
+};

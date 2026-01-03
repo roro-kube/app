@@ -25,4 +25,12 @@ pub enum DomainError {
     /// Domain operation timeout
     #[error("Operation timeout: {0}")]
     Timeout(String),
+
+    /// App configuration validation failed
+    #[error("App config validation error: {0}")]
+    AppConfigValidation(String),
+
+    /// Port forward configuration validation failed
+    #[error("Port forward config validation error: {0}")]
+    PortForwardValidation(String),
 }
