@@ -5,8 +5,51 @@ use std::path::Path;
 
 use git2::{Cred, FetchOptions, RemoteCallbacks, Repository};
 use tokio::task;
+use tokio::fs;
 
 use crate::errors::PersistenceError;
+
+/// Ensure that ~/.roro and ~/.roro/remote directories exist
+///
+/// # Returns
+/// * `Ok(())` if the directories were created or already exist
+/// * `Err(PersistenceError)` if directory creation failed
+async fn ensure_roro_directories() -> Result<(), PersistenceError> {
+    let home = std::env::var("HOME")
+        .or_else(|_| std::env::var("USERPROFILE"))
+        .map_err(|_| {
+            PersistenceError::InvalidInput(
+                "Cannot determine home directory. HOME or USERPROFILE environment variable must be set.".to_string(),
+            )
+        })?;
+
+    let roro_dir = std::path::PathBuf::from(&home).join(".roro");
+    let remote_dir = roro_dir.join("remote");
+
+    // Create ~/.roro if it doesn't exist
+    fs::create_dir_all(&roro_dir)
+        .await
+        .map_err(|e| {
+            PersistenceError::Git(format!(
+                "Failed to create directory {}: {}",
+                roro_dir.display(),
+                e
+            ))
+        })?;
+
+    // Create ~/.roro/remote if it doesn't exist
+    fs::create_dir_all(&remote_dir)
+        .await
+        .map_err(|e| {
+            PersistenceError::Git(format!(
+                "Failed to create directory {}: {}",
+                remote_dir.display(),
+                e
+            ))
+        })?;
+
+    Ok(())
+}
 
 /// Clone a Git repository from a remote URL to a local path
 ///
@@ -275,14 +318,30 @@ pub async fn sync_repository(
     path: &Path,
     credentials: Option<(&str, &str)>,
 ) -> Result<(), PersistenceError> {
+    // Ensure ~/.roro and ~/.roro/remote directories exist
+    ensure_roro_directories().await?;
+
+    // Ensure the parent directory of the repository path exists
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .await
+            .map_err(|e| {
+                PersistenceError::Git(format!(
+                    "Failed to create directory {}: {}",
+                    parent.display(),
+                    e
+                ))
+            })?;
+    }
+
     // Check if repository already exists
     let exists = repository_exists(path).await?;
 
     if exists {
         // Repository exists, fetch latest changes
         fetch_latest(path, credentials).await
-    } else {
-        // Repository doesn't exist, clone it
+    } else {        
+        // Clone the repository
         clone_repository(url, path, credentials).await
     }
 }

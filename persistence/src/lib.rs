@@ -7,7 +7,7 @@ pub mod git;
 pub mod models;
 pub mod store;
 
-pub use config::load_global_config;
+pub use config::{get_config_path_string, load_workstation_config};
 pub use errors::PersistenceError;
 pub use git::{clone_repository, fetch_latest, repository_exists, sync_repository};
 pub use store::Store;

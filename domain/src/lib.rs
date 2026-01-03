@@ -7,7 +7,7 @@ pub mod handlers;
 pub mod processor;
 pub mod types;
 
-pub use config::{AppConfig, GlobalConfig};
+pub use config::{AppReference, WorkstationConfig};
 pub use errors::DomainError;
 pub use handlers::{HandlerRegistry, OperationHandler};
 pub use processor::DomainProcessor;

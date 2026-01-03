@@ -3974,6 +3974,7 @@ dependencies = [
  "clap",
  "k8s-openapi",
  "roro_core",
+ "roro_domain",
  "roro_persistence",
  "tokio",
 ]

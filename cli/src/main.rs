@@ -7,6 +7,7 @@ mod commands;
 
 use clap::Parser;
 use commands::{Command, StatusCommand, SyncCommand};
+use roro_persistence::load_workstation_config;
 
 /// Roro Kube - Docker Compose for Kubernetes
 #[derive(Parser, Debug)]
@@ -24,23 +25,23 @@ pub enum Commands {
     Status,
     /// Sync configurations from Git repositories
     Sync {
-        /// The remote repository URL (SSH or HTTPS)
-        #[arg(long)]
-        url: String,
-        /// The local path where the repository should be synced
-        #[arg(long)]
-        path: std::path::PathBuf,
-        /// Username for authentication (optional)
-        #[arg(long)]
-        username: Option<String>,
-        /// Password or token for authentication (optional)
-        #[arg(long)]
-        password: Option<String>,
+        /// The name of the app configuration to sync
+        name: String,
     },
 }
 
 #[tokio::main]
 async fn main() {
+    // Load workstation configuration at startup
+    // This will create an empty config file if it doesn't exist
+    let workstation_config = match load_workstation_config().await {
+        Ok(config) => config,
+        Err(e) => {
+            eprintln!("Error loading workstation configuration: {e}");
+            std::process::exit(1);
+        }
+    };
+
     let cli = Cli::parse();
 
     let result = match cli.command {
@@ -48,13 +49,8 @@ async fn main() {
             let cmd = StatusCommand::new();
             cmd.execute().await
         }
-        Some(Commands::Sync {
-            url,
-            path,
-            username,
-            password,
-        }) => {
-            let cmd = SyncCommand::new(url, path, username, password);
+        Some(Commands::Sync { name }) => {
+            let cmd = SyncCommand::new(name, workstation_config);
             cmd.execute().await
         }
         None => {
