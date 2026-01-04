@@ -106,3 +106,48 @@ pub async fn load_workstation_config() -> Result<WorkstationConfig, PersistenceE
 
     Ok(config)
 }
+
+/// Save the workstation configuration to ~/.roro/config.json
+///
+/// # Arguments
+/// * `config` - The workstation configuration to save
+///
+/// # Returns
+/// * `Ok(())` if the configuration was saved successfully
+/// * `Err(PersistenceError)` if saving failed
+///
+/// # Errors
+/// * `PersistenceError::Serialization` if the config cannot be serialized or written
+/// * `PersistenceError::InvalidInput` if the home directory cannot be determined
+pub async fn save_workstation_config(config: &WorkstationConfig) -> Result<(), PersistenceError> {
+    let config_path = get_config_path()?;
+
+    // Ensure ~/.roro directory exists
+    let roro_dir = config_path.parent().ok_or_else(|| {
+        PersistenceError::InvalidInput("Cannot determine config directory".to_string())
+    })?;
+
+    fs::create_dir_all(roro_dir).await.map_err(|e| {
+        PersistenceError::Serialization(format!(
+            "Failed to create directory {}: {}",
+            roro_dir.display(),
+            e
+        ))
+    })?;
+
+    // Serialize the config to JSON
+    let json_content = serde_json::to_string_pretty(config).map_err(|e| {
+        PersistenceError::Serialization(format!("Failed to serialize config: {e}"))
+    })?;
+
+    // Write the config file
+    fs::write(&config_path, json_content).await.map_err(|e| {
+        PersistenceError::Serialization(format!(
+            "Failed to write configuration file {}: {}",
+            config_path.display(),
+            e
+        ))
+    })?;
+
+    Ok(())
+}

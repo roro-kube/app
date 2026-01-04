@@ -4,8 +4,10 @@
 // It provides a thin controller layer that delegates to the Core layer.
 
 use clap::Parser;
-use roro_cli::{Command, StatusCommand, SyncCommand};
+use roro_cli::{Command, StatusCommand, SyncCommand, AddCommand};
 use roro_core::load_workstation_config;
+use roro_persistence::load_workstation_config;
+
 
 /// Roro Kube - Docker Compose for Kubernetes
 #[derive(Parser, Debug)]
@@ -19,6 +21,25 @@ pub struct Cli {
 
 #[derive(clap::Subcommand, Debug)]
 pub enum Commands {
+    /// Add an app reference to the workstation configuration
+    Add {
+        /// The name of the app (unique identifier)
+        name: String,
+        /// The Git repository URL
+        git_url: String,
+        /// Local path where the repository should be synced
+        #[arg(long)]
+        local_path: Option<String>,
+        /// Sync interval in milliseconds
+        #[arg(long)]
+        sync_interval: Option<u64>,
+        /// Kubernetes context to use
+        #[arg(long)]
+        kubectl_context: Option<String>,
+        /// Overwrite existing app reference if it already exists
+        #[arg(long)]
+        force: bool,
+    },
     /// Show application status
     Status,
     /// Sync configurations from Git repositories
@@ -43,6 +64,17 @@ async fn main() {
     let cli = Cli::parse();
 
     let result = match cli.command {
+        Some(Commands::Add {
+            name,
+            git_url,
+            local_path,
+            sync_interval,
+            kubectl_context,
+            force,
+        }) => {
+            let cmd = AddCommand::new(name, git_url, local_path, sync_interval, kubectl_context, force);
+            cmd.execute().await
+        }
         Some(Commands::Status) => {
             let cmd = StatusCommand::new();
             cmd.execute().await

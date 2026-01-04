@@ -3,9 +3,11 @@
 // This module contains all CLI command implementations.
 // Each command is a thin controller that delegates to the Core layer.
 
+pub mod add;
 pub mod status;
 pub mod sync;
 
+pub use add::AddCommand;
 pub use status::StatusCommand;
 pub use sync::SyncCommand;
 
