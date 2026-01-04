@@ -4,10 +4,12 @@
 // Each command is a thin controller that delegates to the Core layer.
 
 pub mod add;
+pub mod delete;
 pub mod status;
 pub mod sync;
 
 pub use add::AddCommand;
+pub use delete::DeleteCommand;
 pub use status::StatusCommand;
 pub use sync::SyncCommand;
 

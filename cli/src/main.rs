@@ -4,8 +4,9 @@
 // It provides a thin controller layer that delegates to the Core layer.
 
 use clap::Parser;
-use roro_cli::{Command, StatusCommand, SyncCommand, AddCommand};
+use roro_cli::{Command, StatusCommand, SyncCommand, AddCommand, DeleteCommand};
 use roro_core::load_workstation_config;
+
 use roro_persistence::load_workstation_config;
 
 
@@ -40,6 +41,11 @@ pub enum Commands {
         #[arg(long)]
         force: bool,
     },
+    /// Delete an app reference from the workstation configuration
+    Delete {
+        /// The name of the app to delete
+        name: String,
+    },
     /// Show application status
     Status,
     /// Sync configurations from Git repositories
@@ -73,6 +79,10 @@ async fn main() {
             force,
         }) => {
             let cmd = AddCommand::new(name, git_url, local_path, sync_interval, kubectl_context, force);
+            cmd.execute().await
+        }
+        Some(Commands::Delete { name }) => {
+            let cmd = DeleteCommand::new(name);
             cmd.execute().await
         }
         Some(Commands::Status) => {
