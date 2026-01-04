@@ -3,11 +3,9 @@
 // This is a command-line interface for Roro Kube.
 // It provides a thin controller layer that delegates to the Core layer.
 
-mod commands;
-
 use clap::Parser;
-use commands::{Command, StatusCommand, SyncCommand};
-use roro_persistence::load_workstation_config;
+use roro_cli::{Command, StatusCommand, SyncCommand};
+use roro_core::load_workstation_config;
 
 /// Roro Kube - Docker Compose for Kubernetes
 #[derive(Parser, Debug)]

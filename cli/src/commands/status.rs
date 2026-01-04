@@ -12,6 +12,7 @@ pub struct StatusCommand;
 
 impl StatusCommand {
     /// Create a new status command
+    #[must_use]
     pub fn new() -> Self {
         Self
     }

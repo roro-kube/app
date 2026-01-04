@@ -10,6 +10,7 @@ path = "src/main.rs"
 
 [dependencies]
 roro_core = { path = "../core" }
+roro_domain = { path = "../domain" }
 dioxus = { version = "0.7", features = ["desktop"] }
 image = "0.24"
 k8s-openapi = { version = "0.26", features = ["v1_30"] }

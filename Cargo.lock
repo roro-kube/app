@@ -3976,7 +3976,6 @@ dependencies = [
  "k8s-openapi",
  "roro_core",
  "roro_domain",
- "roro_persistence",
  "tokio",
 ]
 
@@ -4011,6 +4010,7 @@ dependencies = [
  "image",
  "k8s-openapi",
  "roro_core",
+ "roro_domain",
 ]
 
 [[package]]

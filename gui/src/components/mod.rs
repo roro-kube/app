@@ -5,10 +5,13 @@
 
 mod pod_list;
 mod port_forward_item;
+mod workspace_config;
 
 pub use pod_list::PodList;
 #[allow(unused_imports)]
 pub use port_forward_item::PortForwardItem;
+#[allow(unused_imports)]
+pub use workspace_config::WorkspaceConfig;
 
 use dioxus::prelude::*;
 

@@ -1,10 +1,10 @@
 ---
 id: task-0064
 title: Create workspace config display component
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-01-03 21:35'
-updated_date: '2026-01-03 21:35'
+updated_date: '2026-01-04 02:15'
 labels:
   - ui
   - components
@@ -15,25 +15,27 @@ priority: medium
 ---
 
 ## Description
+
 <!-- SECTION:DESCRIPTION:BEGIN -->
 Create a reusable Dioxus component that displays workspace configuration (`WorkstationConfig`) as detailed cards. Each card shows all fields from an `AppReference` entry including name, git URL, local path, sync interval, and Kubernetes context.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] `WorkspaceConfig` component created in `gui/src/components/workspace_config/mod.rs`
-- [ ] Component displays each app as a detailed card with all fields
-- [ ] App name shown as card header
-- [ ] Git URL displayed with label
-- [ ] Local path shown (or default path if not specified)
-- [ ] Sync interval displayed (or default value if not specified)
-- [ ] Kubernetes context shown if specified, otherwise "Not specified"
-- [ ] Uses Tailwind CSS styling consistent with existing components
-- [ ] Handles empty config state gracefully
-- [ ] Component is exported in `gui/src/components/mod.rs`
+- [ ] #1 `WorkspaceConfig` component created in `gui/src/components/workspace_config/mod.rs`
+- [ ] #2 Component displays each app as a detailed card with all fields
+- [ ] #3 App name shown as card header
+- [ ] #4 Git URL displayed with label
+- [ ] #5 Local path shown (or default path if not specified)
+- [ ] #6 Sync interval displayed (or default value if not specified)
+- [ ] #7 Kubernetes context shown if specified, otherwise "Not specified"
+- [ ] #8 Uses Tailwind CSS styling consistent with existing components
+- [ ] #9 Handles empty config state gracefully
+- [ ] #10 Component is exported in `gui/src/components/mod.rs`
 <!-- AC:END -->
 
 ## Implementation Plan
+
 <!-- SECTION:PLAN:BEGIN -->
 - Create `gui/src/components/workspace_config/mod.rs` module
 - Define component props to receive `WorkstationConfig` (Vec<AppReference>)
@@ -45,7 +47,7 @@ Create a reusable Dioxus component that displays workspace configuration (`Works
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
+
 <!-- SECTION:NOTES:BEGIN -->
 (To be filled during implementation)
 <!-- SECTION:NOTES:END -->
-

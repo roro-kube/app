@@ -2,8 +2,8 @@
 //
 // Command for syncing configurations from Git repositories.
 
+use roro_core::{get_config_path_string, sync_repository, CoreError};
 use roro_domain::WorkstationConfig;
-use roro_persistence::{get_config_path_string, sync_repository, PersistenceError};
 
 use super::Command;
 
@@ -22,6 +22,7 @@ impl SyncCommand {
     /// # Arguments
     /// * `app_name` - The name of the app reference to sync
     /// * `workstation_config` - The workstation configuration containing app references
+    #[must_use]
     pub fn new(app_name: String, workstation_config: WorkstationConfig) -> Self {
         Self {
             app_name,
@@ -53,11 +54,24 @@ impl Command for SyncCommand {
         // Sync the repository (credentials will be handled by git credential manager)
         sync_repository(&app_reference.git_url, &local_path, None)
             .await
-            .map_err(|e| match e {
-                PersistenceError::Network(msg) => format!("Network error: {msg}"),
-                PersistenceError::Authentication(msg) => format!("Authentication error: {msg}"),
-                PersistenceError::Git(msg) => format!("Git error: {msg}"),
-                _ => format!("Error: {e}"),
+            .map_err(|e| {
+                // Format error message - CoreError::Persistence already includes the inner error message
+                match &e {
+                    CoreError::Persistence(pe) => {
+                        // The PersistenceError Display already formats as "Network error: ...", etc.
+                        // CoreError wraps it as "Persistence error: Network error: ..."
+                        // Strip the "Persistence error: " prefix for cleaner messages
+                        let msg = format!("{pe}");
+                        if msg.starts_with("Persistence error: ") {
+                            msg.strip_prefix("Persistence error: ")
+                                .unwrap_or(&msg)
+                                .to_string()
+                        } else {
+                            format!("Error: {pe}")
+                        }
+                    }
+                    _ => format!("Error: {e}"),
+                }
             })?;
 
         println!(

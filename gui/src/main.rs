@@ -25,7 +25,7 @@ mod layout;
 mod pages;
 
 use dioxus::prelude::*;
-use pages::Home;
+use pages::{Home, Page, Settings};
 
 fn main() {
     // Launch Dioxus desktop application
@@ -43,6 +43,9 @@ fn App() -> Element {
     // Store tray manager in state to keep it alive
     let mut tray_manager = use_signal(|| None::<tray::TrayManager>);
 
+    // Track current page state
+    let current_page = use_signal(|| Page::Home);
+
     // Initialize tray icon after component mounts
     use_effect(move || match tray::init_tray() {
         Ok(manager) => {
@@ -56,6 +59,17 @@ fn App() -> Element {
 
     rsx! {
         document::Stylesheet { href: asset!("/assets/tailwind.css") }
-        Home {}
+        match *current_page.read() {
+            Page::Home => rsx! {
+                Home {
+                    on_navigate: Some(current_page)
+                }
+            },
+            Page::Settings => rsx! {
+                Settings {
+                    on_navigate: Some(current_page)
+                }
+            },
+        }
     }
 }
