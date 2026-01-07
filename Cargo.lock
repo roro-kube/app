@@ -3973,6 +3973,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "clap",
+ "git2",
  "k8s-openapi",
  "roro_core",
  "roro_domain",

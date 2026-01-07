@@ -24,6 +24,7 @@ k8s-openapi = { version = "0.26", features = ["v1_30"] }
 [dev-dependencies]
 tempfile = "3.8"
 serial_test = "3.0"
+git2 = { workspace = true }
 
 [lints]
 workspace = true
