@@ -4,9 +4,7 @@
 // It provides a thin controller layer that delegates to the Core layer.
 
 use clap::Parser;
-use roro_cli::{Command, StatusCommand, SyncCommand, AddCommand, DeleteCommand};
-use roro_core::load_workstation_config;
-
+use roro_cli::{AddCommand, Command, DeleteCommand, StatusCommand, SyncCommand};
 use roro_persistence::load_workstation_config;
 
 

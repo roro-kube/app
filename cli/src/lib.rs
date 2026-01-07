@@ -4,4 +4,4 @@
 
 pub mod commands;
 
-pub use commands::{Command, StatusCommand, SyncCommand};
+pub use commands::{AddCommand, Command, DeleteCommand, StatusCommand, SyncCommand};
